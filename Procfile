@@ -1,1 +1,1 @@
-web: gunicorn pannemix.wsgi --log-file
+web: gunicorn pannemix.wsgi
