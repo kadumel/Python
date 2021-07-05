@@ -1,0 +1,274 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Document</title>
+    
+    <link rel="stylesheet" href="static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <script src="https://kit.fontawesome.com/c373efe83f.js" crossorigin="anonymous"></script>
+    </head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+      <img src="{% static 'img/logo.png' %}">
+<!--    <a class="navbar-brand" href="#">Navbar</a>-->
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'filtro_consulta' %}">Filtro de movimentação</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'filtro_teste' %}">Teste Filtro</a>
+        </li>
+         <li class="nav-item">
+          <a class="nav-link" href="/accounts/logout/">Sair</a>
+        </li>
+
+      </ul>
+    </div>
+  </nav>
+      
+    <div class="container">
+        <br><br>
+        <h5>Controle de movimentações</h5>
+        <br>
+        <form>
+            <i class="fal fa-trash-alt">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="idDataInicial">Data inicial</label>
+                    <input type="date" class="form-control" id="idDataInicial" placeholder="Data inicial">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="idDataFinal">Data final</label>
+                    <input type="date" class="form-control" id="idDataFinal" placeholder="Data final">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="idLoja">Loja</label>
+                    <input list="Lojacomplete" class="form-control" id="idLoja" >
+                    <datalist id="Lojacomplete">
+                        {% for result in lojas %}
+                            <option> {{ result.nmloja }}  </option>
+                        {% endfor %}
+                    </datalist>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="idUsuario2">Usuário</label>
+                    <input list="datasUsuario" class="form-control" id="idUsuario2" >
+                    <datalist id="datasUsuario">
+                        {% for result in usuario %}
+                            <option> {{ result.username }} </option>
+                        {% endfor %}
+                    </datalist>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="idTipoMov">Tipo de movimentação</label>
+                    <input list="datasTpMovimentacao" class="form-control" id="idTipoMov" >
+                    <datalist id="datasTpMovimentacao">
+                        {% for result in tipoMovimento %}
+                            <option> {{ result.nmtipomovimento }} </option>
+                        {% endfor %}
+                    </datalist>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="idStatus2">Status</label>
+                    <input list="dataStatus" class="form-control" id="idStatus2">
+                    <datalist id="dataStatus">
+                        {% for result in status %}
+                            <option> {{ result.nmStatus }} </option>
+                        {% endfor %}
+                    </datalist>
+                </div>
+            </div>
+            <a href="#" id="idConsultar" class="badge badge-primary" style="font-size: 16px" >Consultar</a>
+            <br><br>
+        </form>
+        <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Cod</th>
+                    <th scope="col">Loja</th>
+                    <th scope="col">Usuário</th>
+                    <th scope="col">Tipo movimentação</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Data Movimentação</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody class="lpTbody">
+
+            </tbody>
+        </table>
+    </div>
+    </div>
+</body>
+
+
+<script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" data-auto-replace-svg="nest"></script>
+ <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <script src="{% static 'js/scripts.js' %}"></script>
+<script type="text/javascript">
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+        var csrftoken = getCookie('csrftoken');
+
+
+
+    $('#idConsultar').click(function(){
+
+        dados = {
+            dataInicial: $('#idDataInicial').val(),
+            dataFinal:  $('#idDataFinal').val(),
+            loja:     $('#idLoja').val(),
+            usuario: $('#idUsuario2').val(),
+            tipoMov: $('#idTipoMov').val(),
+            status: $('#idStatus2').val(),
+        }
+
+        $.ajax({
+                          type:"POST",
+                          headers: {'X-CSRFToken': csrftoken},
+                          url: "http://127.0.0.1:8000/listaMov",
+                          data: JSON.stringify({data: dados}),
+                          success: function(dt){
+
+                                var obj = JSON.parse(dt)
+
+                                 $(".lpTbody tr").remove()
+                                  obj.forEach(function(o, index){
+                                  preecheTabela(o.codigo, o.loja, o.usuario, o.tipo, o.status, o.data)
+
+
+
+                     });
+
+
+                          }
+                    });
+
+
+    });
+
+
+
+
+
+function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, status2, dtmovimentacao){
+
+          var corpoTabela = document.querySelector("tbody")
+
+           var linha = document.createElement("tr")
+           var codigo = document.createElement("td")
+           var loja = document.createElement("td")
+           var usuario = document.createElement("td")
+           var tipo = document.createElement("td")
+           var status = document.createElement("td")
+           var data = document.createElement("td")
+           var editar = document.createElement("a")
+           var excluir = document.createElement("a")
+
+
+
+
+           var vlCodigo = document.createTextNode(cdmovimentacao)
+           var vlLoja = document.createTextNode(cdloja_id)
+           var vlUsuario = document.createTextNode(user_id)
+           var vlTipo = document.createTextNode(cdtipomovimento_id)
+           var vlStatus = document.createTextNode(status2)
+           var vlData = document.createTextNode(dtmovimentacao)
+           var lEditar = document.createTextNode('Editar')
+           var lExcluir = document.createTextNode('Excluir')
+
+
+
+           codigo.appendChild(vlCodigo)
+           loja.appendChild(vlLoja)
+           usuario.appendChild(vlUsuario)
+           tipo.appendChild(vlTipo)
+           status.appendChild(vlStatus)
+           data.appendChild(vlData)
+           editar.appendChild(lEditar)
+           excluir.appendChild(lExcluir)
+
+
+           linha.appendChild(codigo)
+           linha.appendChild(loja)
+           linha.appendChild(usuario)
+           linha.appendChild(tipo)
+           linha.appendChild(status)
+           linha.appendChild(data)
+           linha.appendChild(editar)
+           linha.appendChild(excluir)
+
+           editar.title = 'Editar'
+           excluir.title = 'Excluir'
+
+            corpoTabela.appendChild(linha)
+
+            $('td:nth-child(1),th:nth-child(1)').hide();
+
+
+
+}
+
+
+$('#idLoja').click(function(){
+    this.value = ''
+    $('#Lojacomplete').prop('selectedIndex',0)
+})
+$('#idUsuario2').click(function(){
+    this.value = ''
+    $('#Lojacomplete').prop('selectedIndex',0)
+})
+$('#idTipoMov').click(function(){
+    this.value = ''
+    $('#Lojacomplete').prop('selectedIndex',0)
+})
+$('#idStatus2').click(function(){
+    this.value = ''
+    $('#Lojacomplete').prop('selectedIndex',0)
+})
+
+
+
+
+</script>
+</html>

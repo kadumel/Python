@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>SCJ - Copral</title>
+    <style>
+        img {
+            width:100px;
+        }
+         .auth-card {
+            margin: auto;
+            background-color: #ececec;
+            border-radius: 30px;
+            margin-top: 30px;
+            width: 370px;
+            height: 430px;
+          }
+          div.row {
+                margin-right: 10px;
+                margin-left: 0px;
+            }
+            div.card-body {
+                width: 388px;
+            }
+            #scj-p {
+                margin-top: 3px;
+                color: blue;
+
+            }
+            #id_username {
+                text-align: left;
+                width: 90%;
+                margin-bottom: 20px;
+            }
+
+
+            #id_password {
+
+                width: 90%;
+                margin-bottom: 30px;
+            }
+            #btn-login {
+                display: inline;
+                text-align: center;
+                width: 25%;
+            }
+            #logo-login {
+                text-align: center;
+                width: 80px;
+                border: 1px solid red;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <div class="card auth-card">
+                <div class="card-body">
+                    <img src="{% static 'img/logo.png' %}">
+                    <hr>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ next }}">
+                        {{ form }}
+                        <button type="submit" id="btn-login" class="btn btn-primary btn-block">Entrar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
