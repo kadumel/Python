@@ -70,16 +70,16 @@ class Itemmovimentado(models.Model):
         db_table = 'ItemMovimentado'
 
 
-class Perfil(models.Model):
-    cdperfil = models.AutoField(db_column='cdPerfil', primary_key=True)  # Field name made lowercase.
-    nmperfil = models.CharField(db_column='nmPerfil', max_length=30, blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = True
-        db_table = 'Perfil'
-
-    def __str__(self):
-        return  self.nmperfil
+# class Perfil(models.Model):
+#     cdperfil = models.AutoField(db_column='cdPerfil', primary_key=True)  # Field name made lowercase.
+#     nmperfil = models.CharField(db_column='nmPerfil', max_length=30, blank=True, null=True)  # Field name made lowercase.
+#
+#     class Meta:
+#         managed = True
+#         db_table = 'Perfil'
+#
+#     def __str__(self):
+#         return  self.nmperfil
 
 class Acesso(models.Model):
     cdacesso = models.AutoField(db_column='cdAcesso',primary_key=True)  # Field name made lowercase.
@@ -122,15 +122,15 @@ class Subgrupo(models.Model):
         return self.nmsubgrupo
 
 
-class Usuario(models.Model):
-    cdusuario = models.AutoField(db_column='cdUsuario', primary_key=True)  # Field name made lowercase.
-    cdperfil = models.ForeignKey("Perfil",on_delete=models.PROTECT)
-    nmusuario = models.CharField(db_column='nmUsuario', max_length=30, blank=True, null=True)  # Field name made lowercase.
-    senha = models.CharField(max_length=50, blank=True, null=True)
-
-    class Meta:
-        managed = True
-        db_table = 'Usuario'
+# class Usuario(models.Model):
+#     cdusuario = models.AutoField(db_column='cdUsuario', primary_key=True)  # Field name made lowercase.
+#     cdperfil = models.ForeignKey("Perfil",on_delete=models.PROTECT)
+#     nmusuario = models.CharField(db_column='nmUsuario', max_length=30, blank=True, null=True)  # Field name made lowercase.
+#     senha = models.CharField(max_length=50, blank=True, null=True)
+#
+#     class Meta:
+#         managed = True
+#         db_table = 'Usuario'
 
 
 class Status(models.Model):

@@ -18,7 +18,7 @@
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-      <img src="{% static 'img/logo.png' %}">
+      <img src="{% static 'https://ibb.co/qyVDTf4' %}">
 <!--    <a class="navbar-brand" href="#">Navbar</a>-->
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -158,6 +158,22 @@
   <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   <script src="{% static 'js/scripts.js' %}"></script>
  <script>
+
+ $('#inputLoja2').click(function(){
+    this.value = ''
+    $('#Lojacomplete').prop('selectedIndex',0)
+})
+$('#inputGrupo').click(function(){
+    this.value = ''
+    $('#GrupoComplete').prop('selectedIndex',0)
+})
+$('#inputSubGrupo').click(function(){
+    this.value = ''
+    $('#SubgrupoComplete').prop('selectedIndex',0)
+})
+
+
+
 
 function getCookie(name) {
     var cookieValue = null;

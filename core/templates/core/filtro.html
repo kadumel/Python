@@ -20,7 +20,7 @@
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-      <img src="{% static 'img/logo.png' %}">
+      <img src="{% static 'https://ibb.co/qyVDTf4' %}">
 <!--    <a class="navbar-brand" href="#">Navbar</a>-->
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -205,9 +205,6 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
            var editar = document.createElement("a")
            var excluir = document.createElement("a")
 
-
-
-
            var vlCodigo = document.createTextNode(cdmovimentacao)
            var vlLoja = document.createTextNode(cdloja_id)
            var vlUsuario = document.createTextNode(user_id)
@@ -216,8 +213,6 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
            var vlData = document.createTextNode(dtmovimentacao)
            var lEditar = document.createTextNode('Editar')
            var lExcluir = document.createTextNode('Excluir')
-
-
 
            codigo.appendChild(vlCodigo)
            loja.appendChild(vlLoja)
@@ -245,8 +240,6 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
 
             $('td:nth-child(1),th:nth-child(1)').hide();
 
-
-
 }
 
 
@@ -256,15 +249,15 @@ $('#idLoja').click(function(){
 })
 $('#idUsuario2').click(function(){
     this.value = ''
-    $('#Lojacomplete').prop('selectedIndex',0)
+    $('#datasUsuario').prop('selectedIndex',0)
 })
 $('#idTipoMov').click(function(){
     this.value = ''
-    $('#Lojacomplete').prop('selectedIndex',0)
+    $('#datasTpMovimentacao').prop('selectedIndex',0)
 })
 $('#idStatus2').click(function(){
     this.value = ''
-    $('#Lojacomplete').prop('selectedIndex',0)
+    $('#dataStatus').prop('selectedIndex',0)
 })
 
 
