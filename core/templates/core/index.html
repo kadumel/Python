@@ -285,7 +285,7 @@ $("#btnInserir").click(function(){
                   $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "http://127.0.0.1:8000/movimento",
+                          url: "https://ezbi-pannemix.herokuapp.com/movimento",
                           data: {cab: cabecalho, prod: produtos, flag: 0},
                           success: function(dt){
 
