@@ -166,7 +166,7 @@ function getCookie(name) {
         $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "http://127.0.0.1:8000/listaMov",
+                          url: "https://ezbi-pannemix.herokuapp.com/listaMov",
                           data: JSON.stringify({data: dados}),
                           success: function(dt){
 
