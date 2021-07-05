@@ -106,7 +106,7 @@ class Produto(models.Model):
         db_table = 'Produto'
 
     def __str__(self):
-        return self.cdsubgrupo_id, self.nmproduto
+        return self.idproduto, self.cdsubgrupo, self.nmproduto
 
 
 class Subgrupo(models.Model):
