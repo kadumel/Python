@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Acesso, Tipomovimento, Grupo, Subgrupo, Loja, Produto, Movimentacao, Itemmovimentado, Status
-from .forms import LojaForm, TipoMovientoForm, GrupoForm, SubGrupoForm, ProdutoForm, MovimentacaoForm
+from .forms import LojaForm, TipoMovientoForm, GrupoForm, SubGrupoForm, ProdutoForm
 from django.http import HttpResponse, Http404, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-import json, datetime
+import json
 # Create your views here.
 
 
