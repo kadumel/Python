@@ -74,23 +74,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'pannemix.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'sql_server.pyodbc',
-#         'NAME': 'Pannemix',
-#         'HOST': 'DANIELNOTE',
-#         'USER': 'sa',
-#         "PASSWORD": '',
-#         'PORT': '',
-#
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server',
-#         }
-#     }
-# }
 DATABASES = {
 'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
