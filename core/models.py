@@ -99,7 +99,8 @@ class Produto(models.Model):
     idproduto = models.IntegerField(db_column='idProduto', blank=True, null=True)  # Field name made lowercase.
     # cdgrupo = models.IntegerField(db_column='cdGrupo', blank=True, null=True)  # Field name made lowercase.
     cdsubgrupo = models.ForeignKey("Subgrupo", on_delete=models.PROTECT)
-    nmproduto = models.CharField(db_column='nmProduto', max_length=70, blank=True, null=True)  # Field name made lowercase.
+    nmproduto = models.CharField(db_column='nmProduto', max_length=70, blank=True, null=True)
+    cdUnidade = models.ForeignKey("TipoUnidade", on_delete=models.PROTECT)
 
     class Meta:
         managed = True
@@ -107,6 +108,18 @@ class Produto(models.Model):
 
     def __str__(self):
         return self.nmproduto
+
+
+class TipoUnidade(models.Model):
+    cdUnidade = models.AutoField(db_column='cdUnidade', primary_key=True)  # Field name made lowercase.
+    nmUnidade = models.CharField(db_column='nmUnidade', max_length=5, blank=False, null=False)
+
+    class Meta:
+        managed = True
+        db_table = 'TipoUnidade'
+
+    def __str__(self):
+        return self.nmUnidade
 
 
 class Subgrupo(models.Model):
