@@ -16,7 +16,7 @@ class Grupo(models.Model):
 
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'Grupo'
 
     def __str__(self):
@@ -28,7 +28,7 @@ class Loja(models.Model):
     nmloja = models.CharField(db_column='nmLoja', max_length=50, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'Loja'
 
     def __str__(self):
@@ -39,7 +39,7 @@ class Tipomovimento(models.Model):
     nmtipomovimento = models.CharField(db_column='nmTipoMovimento', max_length=70, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'TipoMovimento'
 
     def __str__(self):
@@ -55,7 +55,7 @@ class Movimentacao(models.Model):
     status = models.ForeignKey("Status",models.PROTECT)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'Movimentacao'
 
 
@@ -66,20 +66,9 @@ class Itemmovimentado(models.Model):
     valor = models.FloatField()
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'ItemMovimentado'
 
-
-# class Perfil(models.Model):
-#     cdperfil = models.AutoField(db_column='cdPerfil', primary_key=True)  # Field name made lowercase.
-#     nmperfil = models.CharField(db_column='nmPerfil', max_length=30, blank=True, null=True)  # Field name made lowercase.
-#
-#     class Meta:
-#         managed = True
-#         db_table = 'Perfil'
-#
-#     def __str__(self):
-#         return  self.nmperfil
 
 class Acesso(models.Model):
     cdacesso = models.AutoField(db_column='cdAcesso',primary_key=True)  # Field name made lowercase.
@@ -87,12 +76,9 @@ class Acesso(models.Model):
     cdloja = models.ForeignKey('Loja',on_delete=models.PROTECT)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'Acesso'
 
-    # def __str__(self):
-    #     return '({}) {}'.format(', '.join(self.user.all().values_list('code', flat=True)), self.username[:20])
-    #     # return self.username
 
 class Produto(models.Model):
     cdproduto = models.AutoField(db_column='cdProduto', primary_key=True)  # Field name made lowercase.
@@ -103,7 +89,7 @@ class Produto(models.Model):
     cdUnidade = models.ForeignKey("TipoUnidade", on_delete=models.PROTECT)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'Produto'
 
     def __str__(self):
@@ -112,10 +98,10 @@ class Produto(models.Model):
 
 class TipoUnidade(models.Model):
     cdUnidade = models.AutoField(db_column='cdUnidade', primary_key=True)  # Field name made lowercase.
-    nmUnidade = models.CharField(db_column='nmUnidade', max_length=5, blank=False, null=False)
+    nmUnidade = models.CharField(db_column='nmUnidade', max_length=5, blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'TipoUnidade'
 
     def __str__(self):
@@ -128,22 +114,11 @@ class Subgrupo(models.Model):
     cdGrupo = models.ForeignKey("Grupo",on_delete=models.PROTECT)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'SubGrupo'
 
     def __str__(self):
         return self.nmsubgrupo
-
-
-# class Usuario(models.Model):
-#     cdusuario = models.AutoField(db_column='cdUsuario', primary_key=True)  # Field name made lowercase.
-#     cdperfil = models.ForeignKey("Perfil",on_delete=models.PROTECT)
-#     nmusuario = models.CharField(db_column='nmUsuario', max_length=30, blank=True, null=True)  # Field name made lowercase.
-#     senha = models.CharField(max_length=50, blank=True, null=True)
-#
-#     class Meta:
-#         managed = True
-#         db_table = 'Usuario'
 
 
 class Status(models.Model):
@@ -151,6 +126,6 @@ class Status(models.Model):
     nmStatus = models.CharField(db_column='nmStatus', max_length=30, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'Status'
 
