@@ -86,7 +86,7 @@ class Produto(models.Model):
     # cdgrupo = models.IntegerField(db_column='cdGrupo', blank=True, null=True)  # Field name made lowercase.
     cdsubgrupo = models.ForeignKey("Subgrupo", on_delete=models.PROTECT)
     nmproduto = models.CharField(db_column='nmProduto', max_length=70, blank=True, null=True)
-    cdUnidade = models.ForeignKey("TipoUnidade", on_delete=models.PROTECT)
+    cdunidade = models.ForeignKey("TipoUnidade", on_delete=models.PROTECT)
 
     class Meta:
         managed = False
