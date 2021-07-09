@@ -5,6 +5,7 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 import json
+from serializers import serializer
 # Create your views here.
 
 
@@ -16,7 +17,7 @@ status = Status.objects.all()
 
 @login_required
 def index(request):
-
+    print("View Index")
     tp_mvform = TipoMovientoForm()
     ljform = LojaForm
     gp_form = GrupoForm
@@ -78,11 +79,7 @@ def movimento(request):
         global mov
         mov = None
 
-        print(cab['movimento'])
-        print(pkModels('tpMov', cab['movimento']))
-
         if flag == 0:
-           print('teste CAB')
            mov = Movimentacao.objects.create(
                         cdtipomovimento_id = pkModels('tpMov', cab['movimento']),
                         user_id = User.objects.filter(username=request.user).values('id'),
@@ -95,30 +92,38 @@ def movimento(request):
 
         for i in prod:
             d = json.loads(i)
-            if d['valor']:
 
-                pesq = Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov)
+            try:
+                if d['valor']:
+                    print('1', d['valor'])
+                    pesq = Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov)
 
-                if (pesq):
-                    print(pesq)
-                    Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=d['valor'])
-                else:
-                    print('Inserir Dados')
-                    insertProduto = Itemmovimentado.objects.update_or_create(
-                        cdmovimentacao_id=idMov,
-                        cdproduto_id=d['cdProduto'],
-                        valor=d['valor']
-                    )
+                    print('2', pesq)
+                    if pesq:
+                        print('3', d, idMov)
+                        Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=d['valor'])
+                        print('3 Finalizado')
+                    else:
+                        print('4', d, idMov)
+                        Itemmovimentado.objects.update_or_create(
+                            cdmovimentacao_id=idMov,
+                            cdproduto_id=d['cdProduto'],
+                            valor=d['valor']
+                        )
+                        print('4 - FIM')
+                    print('fim do IF d[valor]')
+            except KeyError:
+                pass
+
+        print('5', idMov)
+        dados = Itemmovimentado.objects.filter(cdmovimentacao_id=idMov).values('cdmovimentacao_id','cdproduto__nmproduto','valor').order_by('cdproduto__nmproduto')
+
+        dados = json.dumps(list(dados))
+        print(dados)
 
 
 
-
-
-        # if dados != '':
-        #     pd_form = ProdutoForm
-        #     produtos = Produto.objects.filter(cdsubgrupo__nmsubgrupo=cdsbgp).values()
-        #     dados = JsonResponse(list(produtos), safe=False)
-        return HttpResponse(mov)
+        return HttpResponse(dados)
 
     else:
         raise Http404
@@ -265,7 +270,6 @@ def pkModels(tipo, valor):
 
 
 
-
 def adminORnormal(request):
 
     x = User.objects.filter(username=request.user).values_list('is_superuser', flat=True)
@@ -278,3 +282,21 @@ def adminORnormal(request):
 
 
     return lojas
+
+
+
+@login_required
+def filtroSubgrupo(request):
+    if request.is_ajax() and request.method == "POST":
+        paramGrupo = request.POST.get('grupo')
+
+        print(paramGrupo)
+
+        if paramGrupo != '':
+            print('estou aqui!!!')
+            x = list(Subgrupo.objects.filter(cdGrupo__nmgrupo=paramGrupo).values('nmsubgrupo'))
+            print(x)
+
+        return HttpResponse(json.dumps(x))
+    else:
+        raise Http404

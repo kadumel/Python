@@ -22,6 +22,21 @@ class Grupo(models.Model):
     def __str__(self):
         return self.nmgrupo
 
+
+class Subgrupo(models.Model):
+    cdsubgrupo = models.AutoField(db_column='cdSubGrupo', primary_key=True)  # Field name made lowercase.
+    nmsubgrupo = models.CharField(db_column='nmSubGrupo', max_length=70, blank=True, null=True)  # Field name made lowercase.
+    cdGrupo = models.ForeignKey("Grupo",on_delete=models.PROTECT)
+
+    class Meta:
+        managed = False
+        db_table = 'SubGrupo'
+
+    def __str__(self):
+        return self.nmsubgrupo
+
+
+
 class Loja(models.Model):
     cdloja = models.AutoField(db_column='cdLoja', primary_key=True)  # Field name made lowercase.
     cnpj = models.CharField(max_length=18, blank=True, null=True)
@@ -107,18 +122,6 @@ class TipoUnidade(models.Model):
     def __str__(self):
         return self.nmUnidade
 
-
-class Subgrupo(models.Model):
-    cdsubgrupo = models.AutoField(db_column='cdSubGrupo', primary_key=True)  # Field name made lowercase.
-    nmsubgrupo = models.CharField(db_column='nmSubGrupo', max_length=70, blank=True, null=True)  # Field name made lowercase.
-    cdGrupo = models.ForeignKey("Grupo",on_delete=models.PROTECT)
-
-    class Meta:
-        managed = False
-        db_table = 'SubGrupo'
-
-    def __str__(self):
-        return self.nmsubgrupo
 
 
 class Status(models.Model):

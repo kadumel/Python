@@ -9,11 +9,10 @@
     
     <title>Document</title>
     
-    <link rel="stylesheet" href="static 'css/styles.css' %}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-        <script src="https://kit.fontawesome.com/c373efe83f.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet/text" href="{% static 'css/styles.css' %}">
+
     </head>
 
 <body>
@@ -120,12 +119,43 @@
         </table>
     </div>
     </div>
+
+ <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="text-center" id="exampleModalLabel">Produtos cadastrados!!!</h5>
+                  </div>
+                  <div class="modal-body">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th scope="col">Codigo</th>
+                              <th scope="col">Produto</th>
+                              <th scope="col">Valor</th>
+                            </tr>
+                          </thead>
+                          <tbody class="showProdutos">
+
+                          </tbody>
+                        </table>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
 </body>
 
 
 <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" data-auto-replace-svg="nest"></script>
  <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
   <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 
 <script type="text/javascript">
 
@@ -163,7 +193,7 @@ function getCookie(name) {
         $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "https://ezbi-pannemix.herokuapp.com/listaMov",
+                          url: "http://127.0.0.1:8000/listaMov",
                           data: JSON.stringify({data: dados}),
                           success: function(dt){
 
@@ -199,8 +229,10 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
            var tipo = document.createElement("td")
            var status = document.createElement("td")
            var data = document.createElement("td")
+           var span = document.createElement("span")
            var editar = document.createElement("a")
            var excluir = document.createElement("a")
+           var visualizar = document.createElement("a")
 
            var vlCodigo = document.createTextNode(cdmovimentacao)
            var vlLoja = document.createTextNode(cdloja_id)
@@ -210,6 +242,8 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
            var vlData = document.createTextNode(dtmovimentacao)
            var lEditar = document.createTextNode('Editar')
            var lExcluir = document.createTextNode('Excluir')
+           var lVisualizar = document.createTextNode('Visualizar')
+           var lSpan = document.createTextNode('')
 
            codigo.appendChild(vlCodigo)
            loja.appendChild(vlLoja)
@@ -218,7 +252,10 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
            status.appendChild(vlStatus)
            data.appendChild(vlData)
            editar.appendChild(lEditar)
+           editar.appendChild(lSpan)
            excluir.appendChild(lExcluir)
+           visualizar.appendChild(lVisualizar)
+           span.appendChild(lSpan)
 
 
            linha.appendChild(codigo)
@@ -227,18 +264,44 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
            linha.appendChild(tipo)
            linha.appendChild(status)
            linha.appendChild(data)
+           linha.appendChild(visualizar)
            linha.appendChild(editar)
            linha.appendChild(excluir)
 
-           editar.title = 'Editar'
-           excluir.title = 'Excluir'
+
+
+           visualizar.id = 'btnVisualizar'
+           visualizar.href = '#exampleModal'
+           visualizar.setAttribute('data-toggle', 'modal')
+           visualizar.className = 'badge badge-success teste'
+           visualizar.style = 'padding: 50 px'
+
+           editar.id = 'btnEditar'
+           editar.href = '#exampleModal'
+           editar.setAttribute('data-toggle', 'modal')
+           editar.className = 'badge bg-warning text-dark teste'
+
+
+           excluir.id = 'btnExcluir'
+           excluir.href = '#exampleModal'
+           excluir.setAttribute('data-toggle', 'modal')
+           excluir.className = 'badge bg-danger text-white teste'
 
             corpoTabela.appendChild(linha)
+
+            $('a.teste').css({"margin":"5px","outro":"valor"});
 
             $('td:nth-child(1),th:nth-child(1)').hide();
 
 }
 
+
+
+$('#btnEditar').click(function(){
+
+    this.data("data-toggle", "modal")
+
+})
 
 $('#idLoja').click(function(){
     this.value = ''
