@@ -5,7 +5,6 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 import json
-from serializers import serializer
 # Create your views here.
 
 
