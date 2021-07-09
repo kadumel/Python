@@ -224,7 +224,7 @@ $('#inputGrupo').blur(function(){
          $.ajax({
                 type:"POST",
                 headers: {'X-CSRFToken': csrftoken},
-                url: "http://127.0.0.1:8000/filtroSubgrupo",
+                url: "https://ezbi-pannemix.herokuapp.com/filtroSubgrupo",
                 data: {grupo: valor},
                 success: function(dt){
                     var obj = JSON.parse(dt)
@@ -283,7 +283,7 @@ function getCookie(name) {
             $.ajax({
                 type:"POST",
                 headers: {'X-CSRFToken': csrftoken},
-                url: "http://127.0.0.1:8000/filtroMovimento",
+                url: "https://ezbi-pannemix.herokuapp.com/filtroMovimento",
                 data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo },
                 success: function(dt){
                   console.log('Retorno dos dados Pesquisa Dados:' + dt)
@@ -376,7 +376,7 @@ $("#btnInserir").click(function(){
 
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "http://127.0.0.1:8000/movimento",
+                          url: "https://ezbi-pannemix.herokuapp.com/movimento",
                           data: {cab: cabecalho, prod: produtos, flag: varStorage},
                           success: function(dt){
 
@@ -395,7 +395,7 @@ $("#btnInserir").click(function(){
                   $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "http://127.0.0.1:8000/movimento",
+                          url: "https://ezbi-pannemix.herokuapp.com/movimento",
                           data: {cab: cabecalho, prod: produtos, flag: 0},
                           success: function(dt){
 
@@ -445,7 +445,7 @@ $('#btnFinalizar').click(function(){
         $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "http://127.0.0.1:8000/fimMovimento",
+                          url: "https://ezbi-pannemix.herokuapp.com/fimMovimento",
                           data: {flag: varStorage},
                           success: function(dt){
 
