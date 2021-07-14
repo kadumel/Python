@@ -77,7 +77,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'pannemix.wsgi.application'
 
 
-#
+
 # DATABASES = {
 # 'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -88,8 +88,8 @@ WSGI_APPLICATION = 'pannemix.wsgi.application'
 #         'PORT': '5432',
 #     }
 # }
-
-
+#
+#
 DATABASES = {
     "default": dj_database_url.config(default=f"sqlite:///{BASE_DIR}/db.sqlite3")
 }
