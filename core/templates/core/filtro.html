@@ -29,12 +29,12 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link" href="{% url 'index' %}" style="margin: 20px">Movimentação</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'filtro_consulta' %}" style="margin: 20px">Controle</a>
-        </li>
+        </li> -->
          <li class="nav-item">
           <a class="nav-link" href="/accounts/logout/" style="margin: 20px">Sair</a>
         </li>
@@ -98,6 +98,7 @@
                 </div>
             </div>
             <a href="#" id="idConsultar" class="badge badge-primary" style="font-size: 16px" >Consultar</a>
+            <a href="https://ezbi-pannemix.herokuapp.com/insert" id="idInserir" class="badge badge-success" style="font-size: 16px" >Novo</a>
             <br><br>
         </form>
         <div class="table-responsive">
@@ -273,7 +274,7 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
            visualizar.id = 'btnVisualizar'
            visualizar.href = '#exampleModal'
            visualizar.setAttribute('data-toggle', 'modal')
-           visualizar.className = 'badge badge-success teste'
+           visualizar.className = 'badge badge-info teste'
            visualizar.style = 'padding: 50 px'
 
            editar.id = 'btnEditar'
@@ -289,7 +290,7 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
 
             corpoTabela.appendChild(linha)
 
-            $('a.teste').css({"margin":"5px","outro":"valor"});
+            $('a.teste').css({"margin":"5px"});
 
             $('td:nth-child(1),th:nth-child(1)').hide();
 

@@ -56,7 +56,7 @@ def filtroMovimento(request):
 
         if  cdsbgp != '':
             pd_form = ProdutoForm
-            produtos = Produto.objects.filter(cdsubgrupo__nmsubgrupo=cdsbgp).values()
+            produtos = Produto.objects.filter(cdsubgrupo__nmsubgrupo=cdsbgp, ativo='A').values()
             dados = JsonResponse(list(produtos), safe=False)
             return HttpResponse(dados)
 

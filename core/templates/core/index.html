@@ -247,7 +247,7 @@ $('#inputSubGrupo').click(function(){
 
 })
 
-<!--Modal-->
+// <!--Modal-->
 
 
 
@@ -270,7 +270,7 @@ function getCookie(name) {
 
         var csrftoken = getCookie('csrftoken');
 
-<!-- Consulta os produtos para preenchimento dos valores de acordo com o filtro-->
+// <!-- Consulta os produtos para preenchimento dos valores de acordo com o filtro-->
 
     $("#consultar").click(function(){
 
@@ -353,7 +353,7 @@ function preecheTabela(cd, nm, tipo){
 
 
 
-<!--            $('#tbInsert td:nth-child(1),th:nth-child(1)').hide();-->
+// <!--            $('#tbInsert td:nth-child(1),th:nth-child(1)').hide();-->
 
 
 }
@@ -449,13 +449,13 @@ $('#btnFinalizar').click(function(){
                           data: {flag: varStorage},
                           success: function(dt){
 
-        <!--                       Remove o id do item do localstorage    -->
+        // <!--                       Remove o id do item do localstorage    -->
                                    localStorage.removeItem('idMovPannemix')
 
-        <!--                       Habilita o radio button dos movimentos     -->
+        // <!--                       Habilita o radio button dos movimentos     -->
                                    $('.rdButton').attr("disabled", false);
 
-        <!--                       Habilita o campo loja, limpa o campo e seta o placeholder novamente      -->
+        // <!--                       Habilita o campo loja, limpa o campo e seta o placeholder novamente      -->
                                    $('#inputLoja2').attr("disabled", false);
                                    $('#inputLoja2').val("");
                                    $('#inputLoja2').attr("placeholder", "Escolha uma loja...");
@@ -463,6 +463,9 @@ $('#btnFinalizar').click(function(){
                                    $(".showProdutos tr").remove()
 
                                    alert("Registro finalizado com sucesso!!!")
+
+                                  //  this.attr('href', "{% url 'filtro_consulta' %}")
+                                   window.location.href="{% url 'filtro_consulta' %}"
 
                           },
                           error: function(XMLHttpRequest, textStatus, errorThrown){

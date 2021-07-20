@@ -95,6 +95,10 @@ class Acesso(models.Model):
         db_table = 'Acesso'
 
 
+
+
+
+
 class Produto(models.Model):
     cdproduto = models.AutoField(db_column='cdProduto', primary_key=True)  # Field name made lowercase.
     idproduto = models.IntegerField(db_column='idProduto', blank=True, null=True)  # Field name made lowercase.
@@ -102,6 +106,12 @@ class Produto(models.Model):
     cdsubgrupo = models.ForeignKey("Subgrupo", on_delete=models.PROTECT)
     nmproduto = models.CharField(db_column='nmProduto', max_length=70, blank=True, null=True)
     cdunidade = models.ForeignKey("TipoUnidade", on_delete=models.PROTECT)
+
+    GENDER_CHOICES = (
+        ('A', 'Ativo'),
+        ('I', 'Inativo'),
+    )
+    ativo = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
     class Meta:
         managed = False

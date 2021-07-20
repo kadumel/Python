@@ -3,8 +3,8 @@ from .views import index, filtroConsulta, filtroMovimento, movimento, finalizarM
 
 
 urlpatterns = [
-    path('', index, name="index"),
-    path('filtro', filtroConsulta, name="filtro_consulta"),
+    path('insert', index, name="index"),
+    path('', filtroConsulta, name="filtro_consulta"),
     path('movimento', movimento),
     path('filtroMovimento', filtroMovimento, name="filtro_teste"),
     path('fimMovimento', finalizarMov),
