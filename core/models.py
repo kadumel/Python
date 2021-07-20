@@ -7,8 +7,12 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.expressions import OrderBy
 
-
+GENDER_CHOICES = (
+    ('A', 'Ativo'),
+    ('I', 'Inativo'),
+)
 
 class Grupo(models.Model):
     cdgrupo = models.AutoField(db_column='cdGrupo', primary_key=True)  # Field name made lowercase.
@@ -52,13 +56,13 @@ class Loja(models.Model):
 class Tipomovimento(models.Model):
     cdtipomovimento = models.AutoField(db_column='cdTipoMovimento', primary_key=True)  # Field name made lowercase.
     nmtipomovimento = models.CharField(db_column='nmTipoMovimento', max_length=70, blank=True, null=True)  # Field name made lowercase.
-
+    conversao = models.CharField(max_length=1, choices=GENDER_CHOICES)
     class Meta:
         managed = False
         db_table = 'TipoMovimento'
 
     def __str__(self):
-        return self.nmtipomovimento
+        return '{} - {}'.format(self.nmtipomovimento, self.conversao)
 
 class Movimentacao(models.Model):
     cdmovimentacao = models.AutoField(db_column='cdMovimentacao', primary_key=True)  # Field name made lowercase.
@@ -68,11 +72,12 @@ class Movimentacao(models.Model):
     dtmovimentacao = models.DateTimeField(auto_now_add=True)  # Field name made lowercase.
     dtAlteracao = models.DateTimeField(auto_now=True)  # Field name made lowercase.
     status = models.ForeignKey("Status",models.PROTECT)
-
     class Meta:
         managed = False
         db_table = 'Movimentacao'
 
+    def __str__(self):
+        return '{} - {}  -  {} - {}  -  {}'.format(self.cdmovimentacao, self.user.username, self.dtmovimentacao, self.status, self.cdloja.nmloja)
 
 class Itemmovimentado(models.Model):
     cditemmovimentado = models.AutoField(db_column='cdItemMovimentado', primary_key=True)  # Field name made lowercase.
@@ -92,9 +97,11 @@ class Acesso(models.Model):
 
     class Meta:
         managed = False
+        ordering = ['user__username']
         db_table = 'Acesso'
 
-
+    def __str__(self):
+        return '{} - {}'.format(self.user.username, self.cdloja.nmloja)
 
 
 
@@ -106,19 +113,16 @@ class Produto(models.Model):
     cdsubgrupo = models.ForeignKey("Subgrupo", on_delete=models.PROTECT)
     nmproduto = models.CharField(db_column='nmProduto', max_length=70, blank=True, null=True)
     cdunidade = models.ForeignKey("TipoUnidade", on_delete=models.PROTECT)
-
-    GENDER_CHOICES = (
-        ('A', 'Ativo'),
-        ('I', 'Inativo'),
-    )
     ativo = models.CharField(max_length=1, choices=GENDER_CHOICES)
-
+    cduniconv = models.ForeignKey("TipoUnidade", on_delete=models.PROTECT, related_name='Conversao')
+    vlconv = models.FloatField()
     class Meta:
         managed = False
+        ordering = ['nmproduto']
         db_table = 'Produto'
 
     def __str__(self):
-        return self.nmproduto
+        return '{}  -  {}  -  {}'.format(self.nmproduto, self.cdsubgrupo.cdGrupo.nmgrupo, self.cdsubgrupo.nmsubgrupo )
 
 
 class TipoUnidade(models.Model):
@@ -142,3 +146,19 @@ class Status(models.Model):
         managed = False
         db_table = 'Status'
 
+    def __str__(self):
+        return self.nmStatus
+
+class Ocorrencia(models.Model):
+    cdOcorrencia = models.AutoField(db_column='cdOcorrencia', primary_key=True)
+    cdMovimentacao = models.ForeignKey("Movimentacao", on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    dtOcorrencia = models.DateTimeField(auto_now_add=True)
+    dsOcorrencia = models.CharField(db_column='dsOcorrencia', max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'Ocorrencia'
+
+    def __str__(self):
+         return '{}  -  {}  -  {}  -  {}'.format(self.cdMovimentacao.cdmovimentacao, self.user.username, self.dtOcorrencia, self.dsOcorrencia )

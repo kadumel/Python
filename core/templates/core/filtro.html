@@ -234,6 +234,7 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
            var editar = document.createElement("a")
            var excluir = document.createElement("a")
            var visualizar = document.createElement("a")
+           var ocorrencias = document.createElement("a")
 
            var vlCodigo = document.createTextNode(cdmovimentacao)
            var vlLoja = document.createTextNode(cdloja_id)
@@ -244,6 +245,7 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
            var lEditar = document.createTextNode('Editar')
            var lExcluir = document.createTextNode('Excluir')
            var lVisualizar = document.createTextNode('Visualizar')
+           var lOcorrencias = document.createTextNode('Ocorrencias')
            var lSpan = document.createTextNode('')
 
            codigo.appendChild(vlCodigo)
@@ -256,6 +258,8 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
            editar.appendChild(lSpan)
            excluir.appendChild(lExcluir)
            visualizar.appendChild(lVisualizar)
+           ocorrencias.appendChild(lOcorrencias)
+           
            span.appendChild(lSpan)
 
 
@@ -268,25 +272,31 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
            linha.appendChild(visualizar)
            linha.appendChild(editar)
            linha.appendChild(excluir)
+           linha.appendChild(ocorrencias)
 
 
 
            visualizar.id = 'btnVisualizar'
            visualizar.href = '#exampleModal'
            visualizar.setAttribute('data-toggle', 'modal')
-           visualizar.className = 'badge badge-info teste'
+           visualizar.className = 'badge badge-info text-white teste'
            visualizar.style = 'padding: 50 px'
 
            editar.id = 'btnEditar'
            editar.href = '#exampleModal'
            editar.setAttribute('data-toggle', 'modal')
-           editar.className = 'badge bg-warning text-dark teste'
+           editar.className = 'badge bg-secondary text-white teste'
 
 
            excluir.id = 'btnExcluir'
            excluir.href = '#exampleModal'
            excluir.setAttribute('data-toggle', 'modal')
            excluir.className = 'badge bg-danger text-white teste'
+
+           ocorrencias.id = 'btnExcluir'
+           ocorrencias.href = '#exampleModal'
+           ocorrencias.setAttribute('data-toggle', 'modal')
+           ocorrencias.className = 'badge bg-warning text-white teste'
 
             corpoTabela.appendChild(linha)
 
