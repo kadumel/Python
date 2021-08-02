@@ -121,33 +121,67 @@
     </div>
     </div>
 
- <!-- Modal -->
+ <!-- Modal Visualização dos dados -->
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="text-center" id="exampleModalLabel">Produtos cadastrados!!!</h5>
                   </div>
-                  <div class="modal-body">
-                        <table class="table table-striped">
-                          <thead>
-                            <tr>
-                              <th scope="col">Codigo</th>
-                              <th scope="col">Produto</th>
-                              <th scope="col">Valor</th>
-                            </tr>
-                          </thead>
-                          <tbody class="showProdutos">
-
-                          </tbody>
+                <div>
+                    <div class="modal-body">
+                        <table class="table table-striped" id="tableModal">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Codigo</th>
+                                    <th scope="col">Produto</th>
+                                    <th scope="col">Uni</th>
+                                    <th scope="col">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody class="showProdutos">
+                                
+                            </tbody>
                         </table>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                  </div>
+                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                
                 </div>
-              </div>
             </div>
+
+ <!-- Modal exclusão dos dados -->
+ <div class="modal fade" id="exclusaoModal" tabindex="-2" role="dialog" aria-labelledby="exclusaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="text-center" id="exclusaoModalLabel">Produtos cadastrados!!!</h5>
+        </div>
+      <div>
+          <div class="modal-body">
+              <table class="table table-striped" id="tableModal">
+                  <thead>
+                      <tr>
+                          <th scope="col">Codigo</th>
+                          <th scope="col">Produto</th>
+                          <th scope="col">Uni</th>
+                          <th scope="col">Valor</th>
+                      </tr>
+                  </thead>
+                  <tbody class="showProdutos">
+                      
+                  </tbody>
+              </table>
+          </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+              </div>
+          </div>
+      
+      </div>
+  </div>
 
 </body>
 
@@ -182,6 +216,7 @@ function getCookie(name) {
 
     $('#idConsultar').click(function(){
 
+        console.log('teste  no consultar')
         dados = {
             dataInicial: $('#idDataInicial').val(),
             dataFinal:  $('#idDataFinal').val(),
@@ -203,12 +238,12 @@ function getCookie(name) {
                                  $(".lpTbody tr").remove()
                                   obj.forEach(function(o, index){
                                   preecheTabela(o.codigo, o.loja, o.usuario, o.tipo, o.status, o.data)
+                                });
 
-
-
-                     });
-
-
+                                getIdMovimentacao()
+                                editarMovi()
+                                excluirMovi()
+                            
                           }
                     });
 
@@ -216,6 +251,124 @@ function getCookie(name) {
     });
 
 
+
+
+
+    function getIdMovimentacao(){
+
+        var idMov = null
+        console.log('cheguei aqui')
+        var a = document.querySelectorAll('.idVisualizar');
+
+        a.forEach((el) => {
+            el.addEventListener('click', meuID);
+        });
+
+        function meuID(e) {
+            idMov = e.currentTarget.id
+            console.log(idMov);
+
+            $.ajax({
+                            type:"POST",
+                            headers: {'X-CSRFToken': csrftoken},
+                            url: "https://ezbi-pannemix.herokuapp.com/visualizarMov",
+                            data: {data: idMov },
+                            success: function(dt){
+
+                                $(".showProdutos tr").remove()
+
+                                    var obj = JSON.parse(dt)
+                                    obj.forEach(function(o, index){
+                                        console.log(dt)
+                                      preencheTabelaModal(o.cdProduto, o.nmProduto, o.unidade, o.valor)
+                        });
+
+                    }
+                });
+        }
+    }
+
+
+    function editarMovi(){
+        var idMov = null
+        console.log('cheguei aqui Editar')
+        var a = document.querySelectorAll('.btnEditar');
+
+        a.forEach((el) => {
+            el.addEventListener('click', meuID);
+        });
+
+        function meuID(e) {
+            idMov = e.currentTarget.id
+            console.log(idMov);
+
+            localStorage.setItem('idMovPannemix', idMov)
+            href = 'https://ezbi-pannemix.herokuapp.com/insert'
+            $(window.document.location).attr('href', href);
+
+        }
+    }
+
+
+    function excluirMovi(){
+        var idMov = null
+        console.log('cheguei aqui Editar')
+        var a = document.querySelectorAll('.btnExcluir');
+
+        a.forEach((el) => {
+            el.addEventListener('click', meuID);
+        });
+
+        function meuID(e) {
+            idMov = e.currentTarget.id
+            console.log(idMov);
+
+            $.ajax({
+                            type:"POST",
+                            headers: {'X-CSRFToken': csrftoken},
+                            url: "https://ezbi-pannemix.herokuapp.com/excluirMovi",
+                            data: {data: idMov },
+                            success: function(dt){
+
+                                alert(dt)
+
+                            }
+                    });
+
+        }
+    }
+
+    function preencheTabelaModal(cd, nm, uni, vl){
+
+        var corpoTabela = document.querySelector("tbody.showProdutos")
+           var linha = document.createElement("tr")
+
+           var codigo = document.createElement("td")
+           var nome = document.createElement("td")
+           var unidade = document.createElement("td")
+           var valor = document.createElement("td")
+
+
+           var vlCodigo = document.createTextNode(cd)
+           var vlNome = document.createTextNode(nm)
+           var vlUnidade = document.createTextNode(uni)
+
+           var vlValor = document.createTextNode(vl)
+
+
+           codigo.appendChild(vlCodigo)
+           nome.appendChild(vlNome)
+           unidade.appendChild(vlUnidade)
+           valor.appendChild(vlValor)
+
+
+           linha.appendChild(codigo)
+           linha.appendChild(nome)
+           linha.appendChild(unidade)
+           linha.appendChild(valor)
+
+            corpoTabela.appendChild(linha)
+    }
 
 
 
@@ -273,46 +426,41 @@ function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, s
            linha.appendChild(editar)
            linha.appendChild(excluir)
            linha.appendChild(ocorrencias)
-
-
-
-           visualizar.id = 'btnVisualizar'
+       
+           visualizar.id = cdmovimentacao
            visualizar.href = '#exampleModal'
            visualizar.setAttribute('data-toggle', 'modal')
-           visualizar.className = 'badge badge-info text-white teste'
+           visualizar.className = 'badge badge-info text-white teste idVisualizar'
            visualizar.style = 'padding: 50 px'
+        
+         
+           editar.id = cdmovimentacao
+           editar.href = '#'
+           //editar.setAttribute('data-toggle', 'modal')
+           editar.className = 'badge bg-secondary text-white teste btnEditar'
 
-           editar.id = 'btnEditar'
-           editar.href = '#exampleModal'
-           editar.setAttribute('data-toggle', 'modal')
-           editar.className = 'badge bg-secondary text-white teste'
 
-
-           excluir.id = 'btnExcluir'
-           excluir.href = '#exampleModal'
+           excluir.id = cdmovimentacao
+           excluir.href = '#'
            excluir.setAttribute('data-toggle', 'modal')
-           excluir.className = 'badge bg-danger text-white teste'
+           excluir.className = 'badge bg-danger text-white teste btnExcluir'
 
-           ocorrencias.id = 'btnExcluir'
+           ocorrencias.id = cdmovimentacao
            ocorrencias.href = '#exampleModal'
            ocorrencias.setAttribute('data-toggle', 'modal')
-           ocorrencias.className = 'badge bg-warning text-white teste'
+           ocorrencias.className = 'badge bg-warning text-white teste btnOcorrencias'
 
             corpoTabela.appendChild(linha)
 
             $('a.teste').css({"margin":"15px 5px 5px 5px"});
 
-            $('td:nth-child(1),th:nth-child(1)').hide();
+            // $('td:nth-child(1),th:nth-child(1)').hide();
 
 }
 
 
 
-$('#btnEditar').click(function(){
 
-    this.data("data-toggle", "modal")
-
-})
 
 $('#idLoja').click(function(){
     this.value = ''
@@ -330,6 +478,19 @@ $('#idStatus2').click(function(){
     this.value = ''
     $('#dataStatus').prop('selectedIndex',0)
 })
+
+
+// Limpa todas as variaveis do localstorage quando a sair da pagina
+$(document).ready(function(){
+  console.log('Ready disparado');
+  localStorage.clear();
+});
+
+
+
+
+
+
 
 
 

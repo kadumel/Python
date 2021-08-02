@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, filtroConsulta, filtroMovimento, movimento, finalizarMov, acompanhamentoMov,filtroSubgrupo
+from .views import excluirMovi, getAll, getEditar, index, filtroConsulta, filtroMovimento, movimento, finalizarMov, acompanhamentoMov,filtroSubgrupo
 
 
 urlpatterns = [
@@ -10,5 +10,8 @@ urlpatterns = [
     path('fimMovimento', finalizarMov),
     path('listaMov', acompanhamentoMov),
     path('filtroSubgrupo', filtroSubgrupo),
+    path('visualizarMov', getAll), # Pega todos os produtos lançados para um movimento
+    path('getEditar', getEditar), # Pega os dados do cabeçalho da movimentação para inclusão ou alteração dos dados
+    path('excluirMovi', excluirMovi), # Ecluir os itens e o cabeçalho da movimentação 
 
 ]

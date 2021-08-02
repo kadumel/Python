@@ -56,7 +56,7 @@ def filtroMovimento(request):
 
         if  cdsbgp != '':
             pd_form = ProdutoForm
-            produtos = Produto.objects.filter(cdsubgrupo__nmsubgrupo=cdsbgp, ativo='A').values()
+            produtos = Produto.objects.filter(cdsubgrupo__nmsubgrupo=cdsbgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
             dados = JsonResponse(list(produtos), safe=False)
             return HttpResponse(dados)
 
@@ -75,20 +75,22 @@ def movimento(request):
         prod = request.POST.getlist('prod[]')
         flag = int(request.POST.getlist('flag')[0])
 
-        global mov
         mov = None
+        idMov = None
 
         if flag == 0:
-           mov = Movimentacao.objects.create(
+            mov = Movimentacao.objects.create(
                         cdtipomovimento_id = pkModels('tpMov', cab['movimento']),
                         user_id = User.objects.filter(username=request.user).values('id'),
                         cdloja_id = pkModels('loja', cab['loja']),
                         status_id = 2).pk
-        if flag == 0:
+
             idMov = mov
         else:
             idMov = flag
 
+        conversao = list(Tipomovimento.objects.filter(nmtipomovimento=cab['movimento']).values('conversao'))[0]['conversao']
+        print(conversao)
         for i in prod:
             d = json.loads(i)
 
@@ -97,25 +99,48 @@ def movimento(request):
                     print('1', d['valor'])
                     pesq = Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov)
 
+                    produto = list(Produto.objects.filter(cdproduto=d['cdProduto']).values('cdunidade', 'cduniconv', 'vlconv' ))
+
+                    print(produto[0]['cdunidade'])
+
+                    unidade = produto[0]['cdunidade']
+                    unidadeConv = produto[0]['cduniconv']
+                    valorConv = float(d['valor']) * produto[0]['vlconv']
+
                     print('2', pesq)
                     if pesq:
-                        print('3', d, idMov)
-                        Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=d['valor'])
-                        print('3 Finalizado')
+                        
+                        if conversao == 'I':
+                            print('3', d, idMov)
+                            Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=d['valor'])
+                            print('3 Finalizado')
+                        else:
+                            
+                            Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=valorConv)
+
                     else:
                         print('4', d, idMov)
-                        Itemmovimentado.objects.update_or_create(
-                            cdmovimentacao_id=idMov,
-                            cdproduto_id=d['cdProduto'],
-                            valor=d['valor']
-                        )
+                        if conversao == 'I':
+                            Itemmovimentado.objects.update_or_create(
+                                cdmovimentacao_id=idMov,
+                                cdproduto_id=d['cdProduto'],
+                                valor=d['valor'],
+                                cdunidade_id=unidade
+                            )
+                        else:
+                            Itemmovimentado.objects.update_or_create(
+                                cdmovimentacao_id=idMov,
+                                cdproduto_id=d['cdProduto'],
+                                valor=valorConv,
+                                cdunidade_id=unidadeConv
+                            )
                         print('4 - FIM')
                     print('fim do IF d[valor]')
             except KeyError:
                 pass
 
         print('5', idMov)
-        dados = Itemmovimentado.objects.filter(cdmovimentacao_id=idMov).values('cdmovimentacao_id','cdproduto__nmproduto','valor').order_by('cdproduto__nmproduto')
+        dados = Itemmovimentado.objects.filter(cdmovimentacao_id=idMov).values('cdmovimentacao_id','cdproduto__nmproduto','cdunidade__nmUnidade', 'valor').order_by('cdproduto__nmproduto')
 
         dados = json.dumps(list(dados))
         print(dados)
@@ -297,5 +322,90 @@ def filtroSubgrupo(request):
             print(x)
 
         return HttpResponse(json.dumps(x))
+    else:
+        raise Http404
+
+
+
+
+
+@login_required
+def getAll(request):
+
+    if request.is_ajax() and request.method == "POST":
+
+ 
+        dados = request.POST.get('data')
+
+        print( 'teste visualizar', dados)
+
+        x = Itemmovimentado.objects.filter(cdmovimentacao=dados).order_by('cdproduto__nmproduto')
+        print(x)
+
+        
+        lista = []
+        for i in x:
+
+            dados = {
+               
+                "cdProduto" : i.cdproduto.cdproduto,
+                "nmProduto" : i.cdproduto.nmproduto,
+                "unidade"   : i.cdunidade.nmUnidade,
+                "valor" : i.valor
+            }
+            lista.append(dados)
+        
+        print(lista)
+
+        return HttpResponse(json.dumps(lista))
+    else:
+        raise Http404
+
+
+
+
+@login_required
+def getEditar(request):
+
+    if request.is_ajax() and request.method == "POST":
+
+
+        idMov = request.POST.get('dados')
+
+        dados = Itemmovimentado.objects.filter(cdmovimentacao=idMov).values('cdmovimentacao','cdmovimentacao__cdloja__nmloja', 'cdmovimentacao__cdtipomovimento__nmtipomovimento', 'cdmovimentacao__cdtipomovimento__conversao', 'cdproduto', 'cdproduto__nmproduto', 'valor' )
+
+
+
+        dados = json.dumps(list(dados))
+
+
+        print(dados)
+
+        return HttpResponse(dados)
+
+    else:
+        raise Http404
+
+
+
+@login_required
+def excluirMovi(request):
+
+    if request.is_ajax() and request.method == "POST":
+
+        try:
+            idMov = request.POST.get('data')
+
+            print(idMov)
+
+            Itemmovimentado.objects.filter(cdmovimentacao=idMov).delete()
+            Movimentacao.objects.filter(cdmovimentacao=idMov).delete()
+
+            return HttpResponse("Registro excluido com sucesso!!!")
+        except ValueError as e:
+            print(e)
+            return HttpResponse("Erro ao exculir registro.")
+
+
     else:
         raise Http404

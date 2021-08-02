@@ -138,6 +138,7 @@
         <tr>
           <th>Codigo</th>
           <th>Produtos</th>
+          <th>Uni</th>
           <th>Valores</th>
         </tr>
       </thead>
@@ -180,6 +181,7 @@
                             <tr>
                               <th scope="col">Codigo</th>
                               <th scope="col">Produto</th>
+                              <th scope="col">Uni</th>
                               <th scope="col">Valor</th>
                             </tr>
                           </thead>
@@ -289,10 +291,10 @@ function getCookie(name) {
                   console.log('Retorno dos dados Pesquisa Dados:' + dt)
 
                     var obj = JSON.parse(dt)
-
+                   
                     $(".lpTbody tr").remove()
                     obj.forEach(function(o, index){
-                          preecheTabela(o.cdproduto, o.nmproduto, 'insert')
+                          preecheTabela(o.cdproduto, o.nmproduto, o.cdunidade__nmUnidade, 'insert')
 
                      });
                 }
@@ -302,7 +304,7 @@ function getCookie(name) {
 
  $('td:nth-child(1), th:nth-child(1)').hide();
 
-function preecheTabela(cd, nm, tipo){
+function preecheTabela(cd, nm, uni, tipo){
 
         if (tipo == 'insert'){
 
@@ -311,21 +313,27 @@ function preecheTabela(cd, nm, tipo){
            var linha = document.createElement("tr")
            var codigo = document.createElement("td")
            var nome = document.createElement("td")
+           var unidade = document.createElement("td")
            var input = document.createElement("input")
            input.type="number"
            input.id="vlPrd"
 
            var vlCodigo = document.createTextNode(cd)
            var vlNome = document.createTextNode(nm)
+           var vlUnidade = document.createTextNode(uni)
 
            codigo.appendChild(vlCodigo)
            nome.appendChild(vlNome)
+           unidade.appendChild(vlUnidade)
 
            linha.appendChild(codigo)
            linha.appendChild(nome)
+           linha.appendChild(unidade)
            linha.appendChild(input)
 
-            corpoTabela.appendChild(linha)
+          corpoTabela.appendChild(linha)
+
+          $('#tbInsert td:nth-child(1),th:nth-child(1)').hide()
 
         }else{
 
@@ -333,18 +341,22 @@ function preecheTabela(cd, nm, tipo){
            var linha = document.createElement("tr")
 
            var nome = document.createElement("td")
+           var unidade = document.createElement("td")
            var valor = document.createElement("td")
 
 
            var vlNome = document.createTextNode(nm)
+           var vlUnidade = document.createTextNode(uni)
            var vlValor = document.createTextNode(cd)
 
 
            nome.appendChild(vlNome)
+           unidade.appendChild(vlUnidade)
            valor.appendChild(vlValor)
 
 
            linha.appendChild(nome)
+           linha.appendChild(unidade)
            linha.appendChild(valor)
 
             corpoTabela.appendChild(linha)
@@ -353,7 +365,7 @@ function preecheTabela(cd, nm, tipo){
 
 
 
-// <!--            $('#tbInsert td:nth-child(1),th:nth-child(1)').hide();-->
+
 
 
 }
@@ -382,9 +394,11 @@ $("#btnInserir").click(function(){
 
                             var obj = JSON.parse(dt)
 
+                            console.log(obj)
+
                             $(".showProdutos tr").remove()
                             obj.forEach(function(o, index){
-                                  preecheTabela(o.valor, o.cdproduto__nmproduto, 'show')
+                                  preecheTabela(o.valor, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, 'show')
 
                              });
                           }
@@ -403,7 +417,7 @@ $("#btnInserir").click(function(){
 
                             $(".showProdutos tr").remove()
                             obj.forEach(function(o, index){
-                                  preecheTabela(o.valor, o.cdproduto__nmproduto, 'show')
+                                  preecheTabela(o.valor, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, 'show')
 
                              });
 
@@ -530,6 +544,53 @@ function checaLocalStorage(){
 
 }
 
+
+window.onload = (function(){
+
+  const varStorage = localStorage.getItem("idMovPannemix")
+
+  if(varStorage){
+
+    $.ajax({
+
+                          type:"POST",
+                          headers: {'X-CSRFToken': csrftoken},
+                          url: "https://ezbi-pannemix.herokuapp.com/getEditar",
+                          data: {dados: varStorage},
+                          success: function(dt){
+
+                           
+                           
+                           
+                           
+                            var obj = JSON.parse(dt)
+
+                            $(".showProdutos tr").remove()
+
+                            
+                            $('#inputLoja2').val(obj[0].cdmovimentacao__cdloja__nmloja)
+                            $('#inputLoja2').attr("disabled", true)
+
+                              var radio = document.getElementsByName('inpTpMovi')
+                              for(var i = 0; i <= radio.length -1; i++){
+                                if(radio[i].value == obj[0].cdmovimentacao__cdtipomovimento__nmtipomovimento ){
+                                  radio[i].checked = true
+                                }
+                              }
+                              $('.rdButton').attr("disabled", true);
+
+                            obj.forEach(function(o, index){
+                                  
+                             
+                              preecheTabela(o.valor, o.cdproduto__nmproduto, 'show')
+
+
+                             });
+                          }
+                    });
+  }
+
+})
 
 
 

@@ -84,6 +84,7 @@ class Itemmovimentado(models.Model):
     cdmovimentacao = models.ForeignKey("Movimentacao",models.PROTECT)
     cdproduto = models.ForeignKey("Produto",models.PROTECT)
     valor = models.FloatField()
+    cdunidade = models.ForeignKey("TipoUnidade", on_delete=models.PROTECT)
 
     class Meta:
         managed = False
