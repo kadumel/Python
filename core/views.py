@@ -5,6 +5,7 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 import json
+from datetime import datetime as dt
 # Create your views here.
 
 
@@ -13,6 +14,7 @@ grupos = Grupo.objects.all()
 subgrupos = Subgrupo.objects.all()
 user = User.objects.all()
 status = Status.objects.all()
+listProdutos = Produto.objects.all()
 
 @login_required
 def index(request):
@@ -32,6 +34,7 @@ def index(request):
                                             'result_lojas': lojas,
                                             'result_grupos': grupos,
                                             'result_subGrupos': subgrupos,
+                                            'result_produtos': listProdutos,
                                         })
 
 @login_required
@@ -51,14 +54,24 @@ def filtroMovimento(request):
         print('Conteudo da request: ', request.POST.get('loja'))
         print('Fim Ajax')
 
-        cdgp = request.POST.get('grupo')
+        prod = request.POST.get('produto')
         cdsbgp = request.POST.get('subgrupo')
+        cdgp = request.POST.get('grupo')
 
-        if  cdsbgp != '':
-            pd_form = ProdutoForm
+        
+
+        if prod != '':
+            produtos = Produto.objects.filter(nmproduto=prod, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
+            dados = JsonResponse(list(produtos), safe=False)
+        elif  cdsbgp != '':
             produtos = Produto.objects.filter(cdsubgrupo__nmsubgrupo=cdsbgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
             dados = JsonResponse(list(produtos), safe=False)
-            return HttpResponse(dados)
+        else:
+            print(cdgp)
+            produtos = Produto.objects.filter(cdsubgrupo__cdGrupo__nmgrupo=cdgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
+            dados = JsonResponse(list(produtos), safe=False)
+        
+        return HttpResponse(dados)
 
     else:
         raise Http404
@@ -78,11 +91,17 @@ def movimento(request):
         mov = None
         idMov = None
 
+        # date = dt.strptime(cab['data'], '%d/%m/%Y').date()
+        # print(date)
+
         if flag == 0:
+
+            
             mov = Movimentacao.objects.create(
                         cdtipomovimento_id = pkModels('tpMov', cab['movimento']),
                         user_id = User.objects.filter(username=request.user).values('id'),
                         cdloja_id = pkModels('loja', cab['loja']),
+                        # dtmovimentacao = date,
                         status_id = 2).pk
 
             idMov = mov
@@ -289,6 +308,12 @@ def pkModels(tipo, valor):
         mov = User.objects.filter(username=valor).values('id')
         for i in mov:
             id = i['id']
+
+    if (tipo == 'data'):
+        print(valor)
+        for i in valor:
+            id = i['id']
+
 
     return id
 

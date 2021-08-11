@@ -63,6 +63,14 @@
 
        <div>
         <div class="row">
+
+          <!-- <div class="col">
+          </br>
+            <label for="idData">Data</label>
+            <input type="date" class="form-control" id="idData">
+        </div> -->
+
+
           <div class="col">
           </br>
           <label for="inputLoja2">Lojas</label>
@@ -110,6 +118,17 @@
 <!--              {% for result in result_subGrupos %}-->
 <!--                  <option data-value="{{ result.cdGrupo.nmgrupo }}">{{ result.nmsubgrupo }}</option>-->
 <!--              {% endfor %}-->
+          </datalist>
+          </div>
+
+          <div class="col">
+            <label for="inputProduto">Produto</label>
+<!--            {% render_field sbgp_form.nmsubgrupo class="custom-select" placeholder="Informe o SubGrupo" %}-->
+            <input list="ProdutoComplete" class="form-control" id="inputProduto" name="inpProduto" placeholder="Escolha um produto...">
+          <datalist id="ProdutoComplete">
+             {% for result in result_produtos %}-->
+                 <option data-value="{{ result.cdproduto }}">{{ result.nmproduto }}</option>
+             {% endfor %}
           </datalist>
           </div>
 
@@ -207,6 +226,9 @@
 </body>
 <script>
 
+
+// document.getElementById("idData").valueAsDate = new Date()
+
  $('#inputLoja2').click(function(){
     this.value = ''
     $('#Lojacomplete').prop('selectedIndex',0)
@@ -218,6 +240,12 @@ $('#inputGrupo').click(function(){
 
 })
 
+$('#inputProduto').click(function(){
+    this.value = ''
+    $('#ProdutoComplete').prop('selectedIndex',0)
+
+})
+
 $('#inputGrupo').blur(function(){
 
     if (this.value != '') {
@@ -226,7 +254,7 @@ $('#inputGrupo').blur(function(){
          $.ajax({
                 type:"POST",
                 headers: {'X-CSRFToken': csrftoken},
-                url: "https://ezbi-pannemix.herokuapp.com/filtroSubgrupo",
+                url: "http://ezbi-pannemix.herokuapp.com/filtroSubgrupo",
                 data: {grupo: valor},
                 success: function(dt){
                     var obj = JSON.parse(dt)
@@ -280,13 +308,14 @@ function getCookie(name) {
           var loja = $("#inputLoja2").val();
           var grupo = $("#inputGrupo").val();
           var subgrupo = $("#inputSubGrupo").val();
+          var produto = $("#inputProduto").val();
 
             console.log("Teste Ajax - "+ csrftoken)
             $.ajax({
                 type:"POST",
                 headers: {'X-CSRFToken': csrftoken},
-                url: "https://ezbi-pannemix.herokuapp.com/filtroMovimento",
-                data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo },
+                url: "http://ezbi-pannemix.herokuapp.com/filtroMovimento",
+                data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto },
                 success: function(dt){
                   console.log('Retorno dos dados Pesquisa Dados:' + dt)
 
@@ -362,12 +391,6 @@ function preecheTabela(cd, nm, uni, tipo){
             corpoTabela.appendChild(linha)
 
         }
-
-
-
-
-
-
 }
 
 
@@ -388,7 +411,7 @@ $("#btnInserir").click(function(){
 
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "https://ezbi-pannemix.herokuapp.com/movimento",
+                          url: "http://ezbi-pannemix.herokuapp.com/movimento",
                           data: {cab: cabecalho, prod: produtos, flag: varStorage},
                           success: function(dt){
 
@@ -409,7 +432,7 @@ $("#btnInserir").click(function(){
                   $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "https://ezbi-pannemix.herokuapp.com/movimento",
+                          url: "http://ezbi-pannemix.herokuapp.com/movimento",
                           data: {cab: cabecalho, prod: produtos, flag: 0},
                           success: function(dt){
 
@@ -459,7 +482,7 @@ $('#btnFinalizar').click(function(){
         $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "https://ezbi-pannemix.herokuapp.com/fimMovimento",
+                          url: "http://ezbi-pannemix.herokuapp.com/fimMovimento",
                           data: {flag: varStorage},
                           success: function(dt){
 
@@ -499,10 +522,11 @@ function lerCabecalho(){
            movimento : $("input[name='inpTpMovi']:checked").val(),
                 loja : $("#inputLoja2").val(),
                grupo : $("#inputGrupo").val(),
-            subgrupo : $("#inputSubGrupo").val()
+            subgrupo : $("#inputSubGrupo").val(),
+                // data : $('#idData').val()
           }
 
-
+          console.log(dados)
           return JSON.stringify(dados)
 }
 
@@ -555,7 +579,7 @@ window.onload = (function(){
 
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "https://ezbi-pannemix.herokuapp.com/getEditar",
+                          url: "http://ezbi-pannemix.herokuapp.com/getEditar",
                           data: {dados: varStorage},
                           success: function(dt){
 
