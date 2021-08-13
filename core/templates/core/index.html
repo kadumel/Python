@@ -246,6 +246,17 @@ $('#inputProduto').click(function(){
 
 })
 
+$('#inputProduto').focusin(function(){
+  this.value = ''
+})
+
+
+$('#inputProduto').focusout(function(){
+    console.log('Teste de saida do focus ok.')
+    consultaProduto()
+
+})
+
 $('#inputGrupo').blur(function(){
 
     if (this.value != '') {
@@ -254,7 +265,7 @@ $('#inputGrupo').blur(function(){
          $.ajax({
                 type:"POST",
                 headers: {'X-CSRFToken': csrftoken},
-                url: "http://ezbi-pannemix.herokuapp.com/filtroSubgrupo",
+                url: "https://ezbi-pannemix.herokuapp.com/filtroSubgrupo",
                 data: {grupo: valor},
                 success: function(dt){
                     var obj = JSON.parse(dt)
@@ -304,7 +315,14 @@ function getCookie(name) {
 
     $("#consultar").click(function(){
 
-          var movimento = $("#inputTipoM").val();
+          consultaProduto()
+    });
+
+
+
+    function consultaProduto(){
+
+      var movimento = $("#inputTipoM").val();
           var loja = $("#inputLoja2").val();
           var grupo = $("#inputGrupo").val();
           var subgrupo = $("#inputSubGrupo").val();
@@ -314,7 +332,7 @@ function getCookie(name) {
             $.ajax({
                 type:"POST",
                 headers: {'X-CSRFToken': csrftoken},
-                url: "http://ezbi-pannemix.herokuapp.com/filtroMovimento",
+                url: "https://ezbi-pannemix.herokuapp.com/filtroMovimento",
                 data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto },
                 success: function(dt){
                   console.log('Retorno dos dados Pesquisa Dados:' + dt)
@@ -328,7 +346,8 @@ function getCookie(name) {
                      });
                 }
             });
-    });
+
+    }
 
 
  $('td:nth-child(1), th:nth-child(1)').hide();
@@ -411,7 +430,7 @@ $("#btnInserir").click(function(){
 
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "http://ezbi-pannemix.herokuapp.com/movimento",
+                          url: "https://ezbi-pannemix.herokuapp.com/movimento",
                           data: {cab: cabecalho, prod: produtos, flag: varStorage},
                           success: function(dt){
 
@@ -432,7 +451,7 @@ $("#btnInserir").click(function(){
                   $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "http://ezbi-pannemix.herokuapp.com/movimento",
+                          url: "https://ezbi-pannemix.herokuapp.com/movimento",
                           data: {cab: cabecalho, prod: produtos, flag: 0},
                           success: function(dt){
 
@@ -461,10 +480,13 @@ $("#btnInserir").click(function(){
 <!--                    $('#inputGrupo').attr("placeholder", "Escolha um grupo...");-->
                     $('#inputSubGrupo').val("");
                     $('#inputSubGrupo').attr("placeholder", "Escolha um subgrupo...");
-
+                    $('#inputProduto').focus()
+                   
               } else {
 
                   alert("Escolha uma Loja!!!")
+                  $('#inputLoja2').focus()
+                  
 
               }
 
@@ -482,7 +504,7 @@ $('#btnFinalizar').click(function(){
         $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "http://ezbi-pannemix.herokuapp.com/fimMovimento",
+                          url: "https://ezbi-pannemix.herokuapp.com/fimMovimento",
                           data: {flag: varStorage},
                           success: function(dt){
 
@@ -579,7 +601,7 @@ window.onload = (function(){
 
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "http://ezbi-pannemix.herokuapp.com/getEditar",
+                          url: "https://ezbi-pannemix.herokuapp.com/getEditar",
                           data: {dados: varStorage},
                           success: function(dt){
 

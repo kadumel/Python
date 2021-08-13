@@ -98,7 +98,7 @@
                 </div>
             </div>
             <a href="#" id="idConsultar" class="badge badge-primary" style="font-size: 16px" >Consultar</a>
-            <a href="http://ezbi-pannemix.herokuapp.com/insert" id="idInserir" class="badge badge-success" style="font-size: 16px" >Novo</a>
+            <a href="https://ezbi-pannemix.herokuapp.com/insert" id="idInserir" class="badge badge-success" style="font-size: 16px" >Novo</a>
             <br><br>
         </form>
         <div class="table-responsive">
@@ -229,7 +229,7 @@ function getCookie(name) {
         $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "http://ezbi-pannemix.herokuapp.com/listaMov",
+                          url: "https://ezbi-pannemix.herokuapp.com/listaMov",
                           data: JSON.stringify({data: dados}),
                           success: function(dt){
 
@@ -271,7 +271,7 @@ function getCookie(name) {
             $.ajax({
                             type:"POST",
                             headers: {'X-CSRFToken': csrftoken},
-                            url: "http://ezbi-pannemix.herokuapp.com/visualizarMov",
+                            url: "https://ezbi-pannemix.herokuapp.com/visualizarMov",
                             data: {data: idMov },
                             success: function(dt){
 
@@ -303,7 +303,7 @@ function getCookie(name) {
             console.log(idMov);
 
             localStorage.setItem('idMovPannemix', idMov)
-            href = 'http://ezbi-pannemix.herokuapp.com/insert'
+            href = 'https://ezbi-pannemix.herokuapp.com/insert'
             $(window.document.location).attr('href', href);
 
         }
@@ -326,7 +326,7 @@ function getCookie(name) {
             $.ajax({
                             type:"POST",
                             headers: {'X-CSRFToken': csrftoken},
-                            url: "http://ezbi-pannemix.herokuapp.com/excluirMovi",
+                            url: "https://ezbi-pannemix.herokuapp.com/excluirMovi",
                             data: {data: idMov },
                             success: function(dt){
 
