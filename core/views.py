@@ -58,17 +58,16 @@ def filtroMovimento(request):
         cdsbgp = request.POST.get('subgrupo')
         cdgp = request.POST.get('grupo')
 
-        
-
+        print(prod, cdsbgp, cdgp)
         if prod != '':
-            produtos = Produto.objects.filter(nmproduto=prod, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
+            produtos = Produto.objects.filter(cdproduto=prod, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
             dados = JsonResponse(list(produtos), safe=False)
         elif  cdsbgp != '':
-            produtos = Produto.objects.filter(cdsubgrupo__nmsubgrupo=cdsbgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
+            produtos = Produto.objects.filter(cdsubgrupo=cdsbgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
             dados = JsonResponse(list(produtos), safe=False)
         else:
             print(cdgp)
-            produtos = Produto.objects.filter(cdsubgrupo__cdGrupo__nmgrupo=cdgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
+            produtos = Produto.objects.filter(cdsubgrupo__cdGrupo=cdgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
             dados = JsonResponse(list(produtos), safe=False)
         
         return HttpResponse(dados)
@@ -343,7 +342,7 @@ def filtroSubgrupo(request):
 
         if paramGrupo != '':
             print('estou aqui!!!')
-            x = list(Subgrupo.objects.filter(cdGrupo__nmgrupo=paramGrupo).values('nmsubgrupo'))
+            x = list(Subgrupo.objects.filter(cdGrupo__nmgrupo=paramGrupo).values('cdsubgrupo','nmsubgrupo'))
             print(x)
 
         return HttpResponse(json.dumps(x))

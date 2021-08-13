@@ -84,7 +84,7 @@
               <datalist id="Lojacomplete" >
                   {% for result in result_lojas %}
 
-                      <option data-value={{ result.cdloja }}> {{ result.nmloja }} </option>
+                      <option data-value={{ result.cdloja }} value="{{ result.nmloja }}"> </option>
 
                   {% endfor %}
               </datalist>
@@ -105,7 +105,7 @@
             <input list="GrupoComplete" class="form-control" id="inputGrupo" name="inpGrupo" placeholder="Escolha um grupo...">
           <datalist id="GrupoComplete">
               {% for result in result_grupos %}
-                  <option  data-value="{{ result.cdgrupo }}">{{ result.nmgrupo }}</option>
+                  <option  data-value="{{ result.cdgrupo }}" value="{{ result.nmgrupo }}"></option>
               {% endfor %}
           </datalist>
           </div>
@@ -115,9 +115,7 @@
 <!--            {% render_field sbgp_form.nmsubgrupo class="custom-select" placeholder="Informe o SubGrupo" %}-->
             <input list="SubgrupoComplete" class="form-control" id="inputSubGrupo" name="inpSubGrupo" placeholder="Escolha um subgrupo...">
           <datalist id="SubgrupoComplete">
-<!--              {% for result in result_subGrupos %}-->
-<!--                  <option data-value="{{ result.cdGrupo.nmgrupo }}">{{ result.nmsubgrupo }}</option>-->
-<!--              {% endfor %}-->
+
           </datalist>
           </div>
 
@@ -127,7 +125,7 @@
             <input list="ProdutoComplete" class="form-control" id="inputProduto" name="inpProduto" placeholder="Escolha um produto...">
           <datalist id="ProdutoComplete">
              {% for result in result_produtos %}-->
-                 <option data-value="{{ result.cdproduto }}">{{ result.nmproduto }}</option>
+                 <option data-value="{{ result.cdproduto }}" value="{{ result.nmproduto }}"></option>
              {% endfor %}
           </datalist>
           </div>
@@ -271,7 +269,7 @@ $('#inputGrupo').blur(function(){
                     var obj = JSON.parse(dt)
                     obj.forEach(function(o, index){
                           console.log(o)
-                          $('#SubgrupoComplete').append('<option>'+o.nmsubgrupo+'</option>' )
+                          $('#SubgrupoComplete').append('<option data-value="'+o.cdsubgrupo+'" value="'+o.nmsubgrupo+'"></option>' )
                      });
                 }
             });
@@ -323,10 +321,19 @@ function getCookie(name) {
     function consultaProduto(){
 
       var movimento = $("#inputTipoM").val();
-          var loja = $("#inputLoja2").val();
-          var grupo = $("#inputGrupo").val();
-          var subgrupo = $("#inputSubGrupo").val();
-          var produto = $("#inputProduto").val();
+          var idloja = $("#inputLoja2").val();
+          var loja = $('#LojaComplete [value="' + idloja + '"]').data('value')
+
+          var idgrupo = $("#inputGrupo").val();
+          var grupo = $('#GrupoComplete [value="' + idgrupo + '"]').data('value')
+
+          var idsubgrupo = $("#inputSubGrupo").val();
+          var subgrupo = $('#SubgrupoComplete [value="' + idsubgrupo + '"]').data('value')
+         
+
+          var idProduto = $("#inputProduto").val();
+          var produto = $('#ProdutoComplete [value="' + idProduto + '"]').data('value')
+          
 
             console.log("Teste Ajax - "+ csrftoken)
             $.ajax({
