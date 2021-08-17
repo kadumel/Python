@@ -69,7 +69,7 @@ class Movimentacao(models.Model):
     cdtipomovimento = models.ForeignKey("Tipomovimento",models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     cdloja = models.ForeignKey("Loja",models.PROTECT)
-    dtmovimentacao = models.DateTimeField(auto_now_add=True)  # Field name made lowercase.
+    dtmovimentacao = models.DateTimeField(auto_now_add=False)  # Field name made lowercase.
     dtAlteracao = models.DateTimeField(auto_now=True)  # Field name made lowercase.
     status = models.ForeignKey("Status",models.PROTECT)
     class Meta:

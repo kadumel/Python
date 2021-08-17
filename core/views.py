@@ -83,24 +83,20 @@ def movimento(request):
 
     if request.is_ajax() and request.method == "POST":
 
+        print('cheguei aqui')
         cab = json.loads(request.POST.get('cab'))
         prod = request.POST.getlist('prod[]')
         flag = int(request.POST.getlist('flag')[0])
 
         mov = None
         idMov = None
-
-        # date = dt.strptime(cab['data'], '%d/%m/%Y').date()
-        # print(date)
-
+        date = cab['data'] +' '+ str(dt.today().time())
         if flag == 0:
-
-            
             mov = Movimentacao.objects.create(
                         cdtipomovimento_id = pkModels('tpMov', cab['movimento']),
                         user_id = User.objects.filter(username=request.user).values('id'),
                         cdloja_id = pkModels('loja', cab['loja']),
-                        # dtmovimentacao = date,
+                        dtmovimentacao = date,
                         status_id = 2).pk
 
             idMov = mov
@@ -180,8 +176,21 @@ def finalizarMov(request):
     if request.is_ajax() and request.method == "POST":
 
         flag = int(request.POST.getlist('flag')[0])
+        cab = json.loads(request.POST.getlist('cab')[0])
+        
+        date = cab['data'] +' '+ str(dt.today().time())
 
-        Movimentacao.objects.filter(cdmovimentacao=flag).update(status_id=3)
+        print(date)
+
+        dataAtual = list(Movimentacao.objects.filter(cdmovimentacao=flag).values('dtmovimentacao'))
+        dataAtual = dataAtual[0]['dtmovimentacao'].date().strftime('%Y-%m-%d')
+
+        if cab['data'] != dataAtual:
+             Movimentacao.objects.filter(cdmovimentacao=flag).update(status_id=3, dtmovimentacao=date )
+        else:
+            Movimentacao.objects.filter(cdmovimentacao=flag).update(status_id=3 )
+
+
 
         return HttpResponse("OK")
 
@@ -396,16 +405,36 @@ def getEditar(request):
 
         idMov = request.POST.get('dados')
 
-        dados = Itemmovimentado.objects.filter(cdmovimentacao=idMov).values('cdmovimentacao','cdmovimentacao__cdloja__nmloja', 'cdmovimentacao__cdtipomovimento__nmtipomovimento', 'cdmovimentacao__cdtipomovimento__conversao', 'cdproduto', 'cdproduto__nmproduto', 'valor' )
+        dados = Itemmovimentado.objects.filter(cdmovimentacao=idMov).values('cdmovimentacao',
+                                                                            'cdmovimentacao__cdloja__nmloja', 
+                                                                            'cdmovimentacao__dtmovimentacao', 
+                                                                            'cdmovimentacao__cdtipomovimento__nmtipomovimento', 
+                                                                            'cdmovimentacao__cdtipomovimento__conversao', 
+                                                                            'cdproduto', 
+                                                                            'cdproduto__nmproduto', 
+                                                                            'valor', 
+                                                                            'cdunidade__nmUnidade' )
 
-
-
-        dados = json.dumps(list(dados))
-
-
-        print(dados)
-
-        return HttpResponse(dados)
+        
+        lista = []
+       
+        for i in dados:
+            print("teste:" , i['cdmovimentacao'])
+            dados = {
+                
+                "cdmovimentacao" : i['cdmovimentacao'],
+                "cdmovimentacao__cdloja__nmloja" : i['cdmovimentacao__cdloja__nmloja'],
+                'cdmovimentacao__dtmovimentacao' : i['cdmovimentacao__dtmovimentacao'].date().strftime('%Y-%m-%d'), 
+                'cdmovimentacao__cdtipomovimento__nmtipomovimento' :i['cdmovimentacao__cdtipomovimento__nmtipomovimento'], 
+                'cdmovimentacao__cdtipomovimento__conversao' : i['cdmovimentacao__cdtipomovimento__conversao'], 
+                "cdProduto" : i['cdproduto'],
+                "cdproduto__nmproduto" : i['cdproduto__nmproduto'],
+                "cdunidade__nmUnidade"   : i['cdunidade__nmUnidade'],
+                "valor" : i['valor']
+            }
+            lista.append(dados)
+        print(lista)
+        return HttpResponse(json.dumps(lista))
 
     else:
         raise Http404

@@ -64,11 +64,11 @@
        <div>
         <div class="row">
 
-          <!-- <div class="col">
+          <div class="col">
           </br>
             <label for="idData">Data</label>
             <input type="date" class="form-control" id="idData">
-        </div> -->
+        </div>
 
 
           <div class="col">
@@ -224,8 +224,9 @@
 </body>
 <script>
 
+var data =  new Date()
 
-// document.getElementById("idData").valueAsDate = new Date()
+document.getElementById("idData").valueAsDate = data
 
  $('#inputLoja2').click(function(){
     this.value = ''
@@ -240,18 +241,21 @@ $('#inputGrupo').click(function(){
 
 $('#inputProduto').click(function(){
     this.value = ''
-    $('#ProdutoComplete').prop('selectedIndex',0)
+    $('#ProdutoComplete').prop('selectedIndex',0)  
 
 })
 
 $('#inputProduto').focusin(function(){
   this.value = ''
+  $('#ProdutoComplete').prop('selectedIndex',0)
 })
 
 
 $('#inputProduto').focusout(function(){
     console.log('Teste de saida do focus ok.')
-    consultaProduto()
+    if(this.value != ''){
+      consultaProduto()
+    }
 
 })
 
@@ -483,8 +487,8 @@ $("#btnInserir").click(function(){
                    }
 
                     $(".lpTbody tr").remove()
-<!--                    $('#inputGrupo').val("");-->
-<!--                    $('#inputGrupo').attr("placeholder", "Escolha um grupo...");-->
+// <!--                    $('#inputGrupo').val("");-->
+// <!--                    $('#inputGrupo').attr("placeholder", "Escolha um grupo...");-->
                     $('#inputSubGrupo').val("");
                     $('#inputSubGrupo').attr("placeholder", "Escolha um subgrupo...");
                     $('#inputProduto').focus()
@@ -508,11 +512,14 @@ $('#btnFinalizar').click(function(){
 
         const varStorage = localStorage.getItem("idMovPannemix")
 
+        var cab = lerCabecalho()
+
+
         $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
                           url: "https://ezbi-pannemix.herokuapp.com/fimMovimento",
-                          data: {flag: varStorage},
+                          data: {flag: varStorage, cab: cab},
                           success: function(dt){
 
         // <!--                       Remove o id do item do localstorage    -->
@@ -552,7 +559,7 @@ function lerCabecalho(){
                 loja : $("#inputLoja2").val(),
                grupo : $("#inputGrupo").val(),
             subgrupo : $("#inputSubGrupo").val(),
-                // data : $('#idData').val()
+                data : $('#idData').val()
           }
 
           console.log(dados)
@@ -611,18 +618,16 @@ window.onload = (function(){
                           url: "https://ezbi-pannemix.herokuapp.com/getEditar",
                           data: {dados: varStorage},
                           success: function(dt){
-
-                           
-                           
-                           
                            
                             var obj = JSON.parse(dt)
 
                             $(".showProdutos tr").remove()
-
-                            
                             $('#inputLoja2').val(obj[0].cdmovimentacao__cdloja__nmloja)
                             $('#inputLoja2').attr("disabled", true)
+                            $('#idData').val(obj[0].cdmovimentacao__dtmovimentacao)
+                            // document.getElementById("idData").value = obj[0].cdmovimentacao__dtmovimentacao
+
+                            console.log(obj[0].cdmovimentacao__dtmovimentacao)
 
                               var radio = document.getElementsByName('inpTpMovi')
                               for(var i = 0; i <= radio.length -1; i++){
@@ -633,9 +638,8 @@ window.onload = (function(){
                               $('.rdButton').attr("disabled", true);
 
                             obj.forEach(function(o, index){
-                                  
-                             
-                              preecheTabela(o.valor, o.cdproduto__nmproduto, 'show')
+
+                              preecheTabela(o.valor, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, 'show')
 
 
                              });
