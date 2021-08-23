@@ -154,7 +154,7 @@ def movimento(request):
                 pass
 
         print('5', idMov)
-        dados = Itemmovimentado.objects.filter(cdmovimentacao_id=idMov).values('cdmovimentacao_id','cditemmovimentado', 'cdproduto__nmproduto','cdunidade__nmUnidade', 'valor').order_by('cdproduto__nmproduto')
+        dados = Itemmovimentado.objects.filter(cdmovimentacao_id=idMov).values('cdmovimentacao_id','cditemmovimentado', 'cdproduto__nmproduto','cdunidade__nmUnidade', 'valor').order_by('cditemmovimentado')
 
         dados = json.dumps(list(dados))
         print(dados)
@@ -415,7 +415,7 @@ def getEditar(request):
                                                                             'cdproduto__nmproduto', 
                                                                             'valor', 
                                                                             'cdunidade__nmUnidade',
-                                                                            'cditemmovimentado' )
+                                                                            'cditemmovimentado' ).order_by('cditemmovimentado')
 
         
         lista = []
