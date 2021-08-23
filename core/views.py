@@ -154,7 +154,7 @@ def movimento(request):
                 pass
 
         print('5', idMov)
-        dados = Itemmovimentado.objects.filter(cdmovimentacao_id=idMov).values('cdmovimentacao_id','cdproduto__nmproduto','cdunidade__nmUnidade', 'valor').order_by('cdproduto__nmproduto')
+        dados = Itemmovimentado.objects.filter(cdmovimentacao_id=idMov).values('cdmovimentacao_id','cditemmovimentado', 'cdproduto__nmproduto','cdunidade__nmUnidade', 'valor').order_by('cdproduto__nmproduto')
 
         dados = json.dumps(list(dados))
         print(dados)
@@ -367,34 +367,35 @@ def getAll(request):
 
     if request.is_ajax() and request.method == "POST":
 
- 
         dados = request.POST.get('data')
 
         print( 'teste visualizar', dados)
 
-        x = Itemmovimentado.objects.filter(cdmovimentacao=dados).order_by('cdproduto__nmproduto')
-        print(x)
-
-        
-        lista = []
-        for i in x:
-
-            dados = {
-               
-                "cdProduto" : i.cdproduto.cdproduto,
-                "nmProduto" : i.cdproduto.nmproduto,
-                "unidade"   : i.cdunidade.nmUnidade,
-                "valor" : i.valor
-            }
-            lista.append(dados)
-        
-        print(lista)
+        lista = getItens(dados)
 
         return HttpResponse(json.dumps(lista))
     else:
         raise Http404
 
 
+
+def getItens(cd):
+
+    x = Itemmovimentado.objects.filter(cdmovimentacao=cd).order_by('cditemmovimentado')
+        
+    lista = []
+    for i in x:
+
+        dados = {
+            "cdItem"    : i.cditemmovimentado,
+            "cdProduto" : i.cdproduto.cdproduto,
+            "nmProduto" : i.cdproduto.nmproduto,
+            "unidade"   : i.cdunidade.nmUnidade,
+            "valor" : i.valor
+        }
+        lista.append(dados)
+
+    return lista
 
 
 @login_required
@@ -413,7 +414,8 @@ def getEditar(request):
                                                                             'cdproduto', 
                                                                             'cdproduto__nmproduto', 
                                                                             'valor', 
-                                                                            'cdunidade__nmUnidade' )
+                                                                            'cdunidade__nmUnidade',
+                                                                            'cditemmovimentado' )
 
         
         lista = []
@@ -421,7 +423,7 @@ def getEditar(request):
         for i in dados:
             print("teste:" , i['cdmovimentacao'])
             dados = {
-                
+                "cditemmovimentado" : i["cditemmovimentado"],
                 "cdmovimentacao" : i['cdmovimentacao'],
                 "cdmovimentacao__cdloja__nmloja" : i['cdmovimentacao__cdloja__nmloja'],
                 'cdmovimentacao__dtmovimentacao' : i['cdmovimentacao__dtmovimentacao'].date().strftime('%Y-%m-%d'), 
@@ -439,7 +441,7 @@ def getEditar(request):
     else:
         raise Http404
 
-
+ 
 
 @login_required
 def excluirMovi(request):
@@ -455,6 +457,33 @@ def excluirMovi(request):
             Movimentacao.objects.filter(cdmovimentacao=idMov).delete()
 
             return HttpResponse("Registro excluido com sucesso!!!")
+        except ValueError as e:
+            print(e)
+            return HttpResponse("Erro ao exculir registro.")
+
+
+    else:
+        raise Http404
+
+
+
+
+@login_required
+def excluirItem(request):
+
+    if request.is_ajax() and request.method == "POST":
+
+        try:
+            idMov = request.POST.get('idMov')
+            idItem = request.POST.get('idItem')
+
+            print(idMov, '-', idItem)
+
+            Itemmovimentado.objects.filter(cditemmovimentado=idItem).delete()
+
+            lista = getItens(idMov)
+            return HttpResponse(json.dumps(lista))
+
         except ValueError as e:
             print(e)
             return HttpResponse("Erro ao exculir registro.")

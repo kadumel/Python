@@ -193,13 +193,15 @@
                     <h5 class="text-center" id="exampleModalLabel">Produtos cadastrados!!!</h5>
                   </div>
                   <div class="modal-body">
-                        <table class="table table-striped">
+                        <table class="table table-striped" id="tabelaVisualizar">
                           <thead>
                             <tr>
                               <th scope="col">Codigo</th>
                               <th scope="col">Produto</th>
                               <th scope="col">Uni</th>
                               <th scope="col">Valor</th>
+                              <th scope="col">Ação</th>
+
                             </tr>
                           </thead>
                           <tbody class="showProdutos">
@@ -352,7 +354,7 @@ function getCookie(name) {
                    
                     $(".lpTbody tr").remove()
                     obj.forEach(function(o, index){
-                          preecheTabela(o.cdproduto, o.nmproduto, o.cdunidade__nmUnidade, 'insert')
+                          preecheTabela(o.cdproduto, o.nmproduto, o.cdunidade__nmUnidade, 0, 'insert')
 
                      });
                 }
@@ -363,7 +365,7 @@ function getCookie(name) {
 
  $('td:nth-child(1), th:nth-child(1)').hide();
 
-function preecheTabela(cd, nm, uni, tipo){
+function preecheTabela(cd, nm, uni, vl,  tipo){
 
         if (tipo == 'insert'){
 
@@ -399,29 +401,81 @@ function preecheTabela(cd, nm, uni, tipo){
            var corpoTabela = document.querySelector("tbody.showProdutos")
            var linha = document.createElement("tr")
 
+           var codigo = document.createElement("td")
            var nome = document.createElement("td")
            var unidade = document.createElement("td")
            var valor = document.createElement("td")
+           var excluirItem = document.createElement("a")
 
-
+           var vlCodigo = document.createTextNode(cd)
            var vlNome = document.createTextNode(nm)
            var vlUnidade = document.createTextNode(uni)
-           var vlValor = document.createTextNode(cd)
+           var vlValor = document.createTextNode(vl)
+           var vlExcluirItem = document.createTextNode('Excluir')
 
-
+           codigo.appendChild(vlCodigo)
            nome.appendChild(vlNome)
            unidade.appendChild(vlUnidade)
            valor.appendChild(vlValor)
+           excluirItem.appendChild(vlExcluirItem)
 
-
+           linha.appendChild(codigo)
            linha.appendChild(nome)
            linha.appendChild(unidade)
            linha.appendChild(valor)
+           linha.appendChild(excluirItem)
 
-            corpoTabela.appendChild(linha)
-
+           corpoTabela.appendChild(linha)
+           
+           excluirItem.id = cd
+           excluirItem.className = 'badge bg-warning text-white teste btnExcluirItem'
+           excluirItem.href = '#'
+            $('a.teste').css({"margin":"15px 5px 5px 5px"})       
+            
+            $('#tabelaVisualizar td:nth-child(1),th:nth-child(1)').hide()
         }
+
+        
 }
+
+
+
+function excluirItem(){
+        var idItem = null
+        var a = document.querySelectorAll('.btnExcluirItem');
+        
+
+        a.forEach((el) => {
+            el.addEventListener('click', meuID);
+        });
+
+        function meuID(e) {
+            idItem = e.currentTarget.id
+            const varStorage = localStorage.getItem("idMovPannemix")
+            
+
+            if (varStorage) {
+              console.log(idItem, ' - ', varStorage);
+            $.ajax({
+                            type:"POST",
+                            headers: {'X-CSRFToken': csrftoken},
+                            url: "https://ezbi-pannemix.herokuapp.com/excluirItem",
+                            data: {idMov: varStorage, idItem: idItem },
+                            success: function(dt){
+
+                              var obj = JSON.parse(dt)
+                              $(".showProdutos tr").remove()
+                              obj.forEach(function(o, index){
+                                    preecheTabela(o.cdItem, o.nmProduto, o.unidade, o.valor, 'show')
+
+                              });
+
+                              excluirItem()
+                            }
+                    });
+                }
+        }
+    }
 
 
 $("#btnInserir").click(function(){
@@ -432,7 +486,7 @@ $("#btnInserir").click(function(){
        cabecalho = lerCabecalho()
 
         const varStorage = localStorage.getItem("idMovPannemix")
-        console.log($('#inputLoja2').val())
+        // console.log($('#inputLoja2').val())
         if ( $('#inputLoja2').val() != "") {
 
               if (varStorage) {
@@ -451,9 +505,11 @@ $("#btnInserir").click(function(){
 
                             $(".showProdutos tr").remove()
                             obj.forEach(function(o, index){
-                                  preecheTabela(o.valor, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, 'show')
+                                  preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, 'show')
 
                              });
+
+                             excluirItem()
                           }
                     });
 
@@ -470,19 +526,19 @@ $("#btnInserir").click(function(){
 
                             $(".showProdutos tr").remove()
                             obj.forEach(function(o, index){
-                                  preecheTabela(o.valor, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, 'show')
+                                  preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, 'show')
 
                              });
 
-
-                            localStorage.setItem('idMovPannemix',obj[0].cdmovimentacao_id);
-
-                            $('.rdButton').attr("disabled", true);
-                            $('#inputLoja2').attr("disabled", true);
-
-
-
-                          }
+                             localStorage.setItem('idMovPannemix',obj[0].cdmovimentacao_id);
+                             
+                             $('.rdButton').attr("disabled", true);
+                             $('#inputLoja2').attr("disabled", true);
+                             
+                             
+                             excluirItem()
+                             
+                            }
                     });
                    }
 
@@ -639,10 +695,12 @@ window.onload = (function(){
 
                             obj.forEach(function(o, index){
 
-                              preecheTabela(o.valor, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, 'show')
+                              preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, 'show')
 
 
                              });
+
+                             excluirItem()
                           }
                     });
   }
