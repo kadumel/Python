@@ -133,7 +133,7 @@ def movimento(request):
         for i in prod:
             d = json.loads(i)
             try:
-                if d['valor'] or ['valor'] != '0':
+                if d['valor'] and ['valor'] != '0':
                     pesq = Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov)
                     produto = list(Produto.objects.filter(cdproduto=d['cdProduto']).values('cdunidade', 'cduniconv', 'vlconv', 'percPerda' ))
 
@@ -148,10 +148,16 @@ def movimento(request):
 
                         vlAtual = Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).values('valorLiquido')
                         print(vlAtual)
-                        if vlAtual[0]['valorLiquido'] != float(d['valorLiquido']):
-                            valorLiq = float(d['valorLiquido']) * float( 1 - (produto[0]['percPerda'] / 100))
+                        if vlAtual:
+                            if vlAtual[0]['valorLiquido'] != float(d['valorLiquido']):
+                                valorLiq = float(d['valorLiquido']) * float( 1 - (produto[0]['percPerda'] / 100))
+                            else:
+                                valorLiq = vlAtual[0]['valorLiquido'] 
                         else:
-                            valorLiq = vlAtual[0]['valorLiquido']                                        
+                            if d['valorLiquido']:
+                                valorLiq = float(d['valorLiquido']) * float( 1 - (produto[0]['percPerda'] / 100)) 
+                            else:
+                                valorLiq = 0                                     
         
 
                     # Verifica se o produto já foi inserido e atualiza os valores
