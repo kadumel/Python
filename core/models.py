@@ -85,6 +85,7 @@ class Itemmovimentado(models.Model):
     cdproduto = models.ForeignKey("Produto",models.PROTECT)
     valor = models.FloatField()
     cdunidade = models.ForeignKey("TipoUnidade", on_delete=models.PROTECT)
+    valorLiquido = models.FloatField()
 
     class Meta:
         managed = False
@@ -117,6 +118,7 @@ class Produto(models.Model):
     ativo = models.CharField(max_length=1, choices=GENDER_CHOICES)
     cduniconv = models.ForeignKey("TipoUnidade", on_delete=models.PROTECT, related_name='Conversao')
     vlconv = models.FloatField()
+    percPerda = models.FloatField(db_column='percPerdaDesc', blank=True, null=True)
     class Meta:
         managed = False
         ordering = ['nmproduto']

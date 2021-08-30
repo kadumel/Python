@@ -98,7 +98,7 @@
                 </div>
             </div>
             <a href="#" id="idConsultar" class="badge badge-primary" style="font-size: 16px" >Consultar</a>
-            <a href="https://ezbi-pannemix.herokuapp.com/insert" id="idInserir" class="badge badge-success" style="font-size: 16px" >Novo</a>
+            <a href="http://ezbi-pannemix.herokuapp.com/insert" id="idInserir" class="badge badge-success" style="font-size: 16px" >Novo</a>
             <br><br>
         </form>
         <div class="table-responsive">
@@ -136,7 +136,8 @@
                                     <th scope="col">Codigo</th>
                                     <th scope="col">Produto</th>
                                     <th scope="col">Uni</th>
-                                    <th scope="col">Valor</th>
+                                    <th scope="col">vlBruto</th>
+                                    <th scope="col">vlLíquido</th>
                                 </tr>
                             </thead>
                             <tbody class="showProdutos">
@@ -167,7 +168,8 @@
                           <th scope="col">Codigo</th>
                           <th scope="col">Produto</th>
                           <th scope="col">Uni</th>
-                          <th scope="col">Valor</th>
+                          <th scope="col">vlBruto</th>
+                          <th scope="col">vlLíquido</th>
                       </tr>
                   </thead>
                   <tbody class="showProdutos">
@@ -236,7 +238,7 @@ function getCookie(name) {
         $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "https://ezbi-pannemix.herokuapp.com/listaMov",
+                          url: "http://ezbi-pannemix.herokuapp.com/listaMov",
                           data: JSON.stringify({data: dados}),
                           success: function(dt){
 
@@ -278,7 +280,7 @@ function getCookie(name) {
             $.ajax({
                             type:"POST",
                             headers: {'X-CSRFToken': csrftoken},
-                            url: "https://ezbi-pannemix.herokuapp.com/visualizarMov",
+                            url: "http://ezbi-pannemix.herokuapp.com/visualizarMov",
                             data: {data: idMov },
                             success: function(dt){
 
@@ -287,7 +289,7 @@ function getCookie(name) {
                                     var obj = JSON.parse(dt)
                                     obj.forEach(function(o, index){
                                         console.log(dt)
-                                      preencheTabelaModal(o.cdProduto, o.nmProduto, o.unidade, o.valor)
+                                      preencheTabelaModal(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido)
                         });
 
                     }
@@ -310,7 +312,7 @@ function getCookie(name) {
             console.log(idMov);
 
             localStorage.setItem('idMovPannemix', idMov)
-            href = 'https://ezbi-pannemix.herokuapp.com/insert'
+            href = 'http://ezbi-pannemix.herokuapp.com/insert'
             $(window.document.location).attr('href', href);
 
         }
@@ -333,7 +335,7 @@ function getCookie(name) {
             $.ajax({
                             type:"POST",
                             headers: {'X-CSRFToken': csrftoken},
-                            url: "https://ezbi-pannemix.herokuapp.com/excluirMovi",
+                            url: "http://ezbi-pannemix.herokuapp.com/excluirMovi",
                             data: {data: idMov },
                             success: function(dt){
 
@@ -345,7 +347,7 @@ function getCookie(name) {
         }
     }
 
-    function preencheTabelaModal(cd, nm, uni, vl){
+    function preencheTabelaModal(cd, nm, uni, vl, vlLiq){
 
         var corpoTabela = document.querySelector("tbody.showProdutos")
            var linha = document.createElement("tr")
@@ -354,6 +356,7 @@ function getCookie(name) {
            var nome = document.createElement("td")
            var unidade = document.createElement("td")
            var valor = document.createElement("td")
+           var valorLiquido = document.createElement("td")
 
 
            var vlCodigo = document.createTextNode(cd)
@@ -362,17 +365,25 @@ function getCookie(name) {
 
            var vlValor = document.createTextNode(vl)
 
+           var liquido = 0 
+           if (vlLiq != null){
+                liquido = vlLiq
+           }
+           var vlLiquido = document.createTextNode(liquido)
+
 
            codigo.appendChild(vlCodigo)
            nome.appendChild(vlNome)
            unidade.appendChild(vlUnidade)
            valor.appendChild(vlValor)
+           valorLiquido.appendChild(vlLiquido)
 
 
            linha.appendChild(codigo)
            linha.appendChild(nome)
            linha.appendChild(unidade)
            linha.appendChild(valor)
+           linha.appendChild(valorLiquido)
 
             corpoTabela.appendChild(linha)
     }

@@ -150,13 +150,14 @@
   <form>
     {% csrf_token %}
     <h2>Lista de produtos</h2>
-    <table class="table table-hover" id="tbInsert">
+    <table class="table table-striped" id="tbInsert">
       <thead>
         <tr>
           <th>Codigo</th>
           <th>Produtos</th>
           <th>Uni</th>
-          <th>Valores</th>
+          <th>Valor Bruto / Líquido</th>
+
         </tr>
       </thead>
       <tbody class="lpTbody">
@@ -199,7 +200,8 @@
                               <th scope="col">Codigo</th>
                               <th scope="col">Produto</th>
                               <th scope="col">Uni</th>
-                              <th scope="col">Valor</th>
+                              <th scope="col">vlBruto</th>
+                              <th scope="col">vlLíquido</th>
                               <th scope="col">Ação</th>
 
                             </tr>
@@ -254,7 +256,6 @@ $('#inputProduto').focusin(function(){
 
 
 $('#inputProduto').focusout(function(){
-    console.log('Teste de saida do focus ok.')
     if(this.value != ''){
       consultaProduto()
     }
@@ -269,12 +270,11 @@ $('#inputGrupo').blur(function(){
          $.ajax({
                 type:"POST",
                 headers: {'X-CSRFToken': csrftoken},
-                url: "https://ezbi-pannemix.herokuapp.com/filtroSubgrupo",
+                url: "http://ezbi-pannemix.herokuapp.com/filtroSubgrupo",
                 data: {grupo: valor},
                 success: function(dt){
                     var obj = JSON.parse(dt)
                     obj.forEach(function(o, index){
-                          console.log(o)
                           $('#SubgrupoComplete').append('<option data-value="'+o.cdsubgrupo+'" value="'+o.nmsubgrupo+'"></option>' )
                      });
                 }
@@ -340,89 +340,168 @@ function getCookie(name) {
           var idProduto = $("#inputProduto").val();
           var produto = $('#ProdutoComplete [value="' + idProduto + '"]').data('value')
           
+          const varStorage = localStorage.getItem("idMovPannemix")
+            
 
-            console.log("Teste Ajax - "+ csrftoken)
-            $.ajax({
-                type:"POST",
-                headers: {'X-CSRFToken': csrftoken},
-                url: "https://ezbi-pannemix.herokuapp.com/filtroMovimento",
-                data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto },
-                success: function(dt){
-                  console.log('Retorno dos dados Pesquisa Dados:' + dt)
+            if (varStorage) {
 
-                    var obj = JSON.parse(dt)
-                   
-                    $(".lpTbody tr").remove()
-                    obj.forEach(function(o, index){
-                          preecheTabela(o.cdproduto, o.nmproduto, o.cdunidade__nmUnidade, 0, 'insert')
+              $.ajax({
+                  type:"POST",
+                  headers: {'X-CSRFToken': csrftoken},
+                  url: "http://ezbi-pannemix.herokuapp.com/filtroMovimento",
+                  data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto, idMov: varStorage},
+                  success: function(dt){
 
-                     });
-                }
-            });
+                      var obj = JSON.parse(dt)
+                    
+                      $(".lpTbody tr").remove()
+                      obj.forEach(function(o, index){
+                            preecheTabela(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido, o.percPerda,  'insert')
 
+                      });
+                  }
+              });
+
+            }else{
+
+              $.ajax({
+                  type:"POST",
+                  headers: {'X-CSRFToken': csrftoken},
+                  url: "http://ezbi-pannemix.herokuapp.com/filtroMovimento",
+                  data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto, idMov: 0},
+                  success: function(dt){
+
+                      var obj = JSON.parse(dt)
+                    
+                      $(".lpTbody tr").remove()
+                      obj.forEach(function(o, index){
+                            preecheTabela(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido, o.percPerda,   'insert')
+
+                      });
+                  }
+              });
+
+
+            }
     }
 
 
  $('td:nth-child(1), th:nth-child(1)').hide();
 
-function preecheTabela(cd, nm, uni, vl,  tipo){
+function preecheTabela(cd, nm, uni, vl, vlLiq, percPerda, tipo){
 
         if (tipo == 'insert'){
 
             var corpoTabela = document.querySelector("tbody.lpTbody")
-            console.log(corpoTabela)
            var linha = document.createElement("tr")
+           linha.className = 'trInputs'
            var codigo = document.createElement("td")
            var nome = document.createElement("td")
            var unidade = document.createElement("td")
            var input = document.createElement("input")
            input.type="number"
            input.id="vlPrd"
+           input.className = "inputValores"
+           var input2 = document.createElement("input")
+           input2.type="number"
+           input2.id="vlPrdLiq"
+           input2.className = "inputValores"
 
            var vlCodigo = document.createTextNode(cd)
            var vlNome = document.createTextNode(nm)
            var vlUnidade = document.createTextNode(uni)
+           var vlBruto = document.createTextNode(vl)
+
+           var liquido = null
+           if (vlLiq != null){
+              Liquido = vlLiq
+           }
+           var vlLiquido = document.createTextNode(vlLiq)
 
            codigo.appendChild(vlCodigo)
            nome.appendChild(vlNome)
            unidade.appendChild(vlUnidade)
-
+           input.appendChild(vlBruto)
+           input.value = vl
+           
+           
            linha.appendChild(codigo)
            linha.appendChild(nome)
            linha.appendChild(unidade)
            linha.appendChild(input)
+           
+
+
+           var movimentoAtual = $("input[name='inpTpMovi']:checked").val()
+          if ( movimentoAtual == "INVENTARIO" && (percPerda != null  || percPerda > 0) ){
+           
+          linha.appendChild(input2)
+          input2.value = vlLiq
+           $('#tbInsert td:nth-child(5)').show()
+
+          }else{
+
+           $('#tbInsert td:nth-child(5)').hide()
+           
+          }
 
           corpoTabela.appendChild(linha)
 
+          // if (vl == null) {
+          //   $('#vlPrd').val()
+          // }else{
+          //   $('#vlPrd').val(vl)
+          // }
+
+
+
+          // if (vlLiq == null) {
+          //   $('#vlPrdLiq').val()
+          // }else{
+          //   $('#vlPrdLiq').val(vlLiq)
+          // }
+
           $('#tbInsert td:nth-child(1),th:nth-child(1)').hide()
+          $('input.inputValores').css({"margin":"15px 5px 5px 5px", "width":"100px"}) 
 
         }else{
 
            var corpoTabela = document.querySelector("tbody.showProdutos")
            var linha = document.createElement("tr")
 
+
            var codigo = document.createElement("td")
            var nome = document.createElement("td")
            var unidade = document.createElement("td")
            var valor = document.createElement("td")
+           var valorLiq = document.createElement("td")
            var excluirItem = document.createElement("a")
 
            var vlCodigo = document.createTextNode(cd)
            var vlNome = document.createTextNode(nm)
            var vlUnidade = document.createTextNode(uni)
            var vlValor = document.createTextNode(vl)
+
+           var liquido = 0
+           if (vlLiq != null){
+              liquido = vlLiq
+           }
+          
+           var vlLiquido = document.createTextNode(liquido)
            var vlExcluirItem = document.createTextNode('Excluir')
 
            codigo.appendChild(vlCodigo)
            nome.appendChild(vlNome)
            unidade.appendChild(vlUnidade)
            valor.appendChild(vlValor)
+           valorLiq.appendChild(vlLiquido)
            excluirItem.appendChild(vlExcluirItem)
 
            linha.appendChild(codigo)
            linha.appendChild(nome)
            linha.appendChild(unidade)
            linha.appendChild(valor)
+           linha.appendChild(valorLiq)
            linha.appendChild(excluirItem)
 
            corpoTabela.appendChild(linha)
@@ -433,6 +512,8 @@ function preecheTabela(cd, nm, uni, vl,  tipo){
             $('a.teste').css({"margin":"15px 5px 5px 5px"})       
             
             $('#tabelaVisualizar td:nth-child(1),th:nth-child(1)').hide()
+
+
         }
 
         
@@ -455,18 +536,17 @@ function excluirItem(){
             
 
             if (varStorage) {
-              console.log(idItem, ' - ', varStorage);
             $.ajax({
                             type:"POST",
                             headers: {'X-CSRFToken': csrftoken},
-                            url: "https://ezbi-pannemix.herokuapp.com/excluirItem",
+                            url: "http://ezbi-pannemix.herokuapp.com/excluirItem",
                             data: {idMov: varStorage, idItem: idItem },
                             success: function(dt){
 
                               var obj = JSON.parse(dt)
                               $(".showProdutos tr").remove()
                               obj.forEach(function(o, index){
-                                    preecheTabela(o.cdItem, o.nmProduto, o.unidade, o.valor, 'show')
+                                    preecheTabela(o.cdItem, o.nmProduto, o.unidade, o.valor, o.valorLiquido, 0, 'show')
 
                               });
 
@@ -486,26 +566,22 @@ $("#btnInserir").click(function(){
        cabecalho = lerCabecalho()
 
         const varStorage = localStorage.getItem("idMovPannemix")
-        // console.log($('#inputLoja2').val())
         if ( $('#inputLoja2').val() != "") {
 
               if (varStorage) {
-                console.log("flag localstorage armazenada")
                   $.ajax({
 
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "https://ezbi-pannemix.herokuapp.com/movimento",
+                          url: "http://ezbi-pannemix.herokuapp.com/movimento",
                           data: {cab: cabecalho, prod: produtos, flag: varStorage},
                           success: function(dt){
 
                             var obj = JSON.parse(dt)
 
-                            console.log(obj)
-
                             $(".showProdutos tr").remove()
                             obj.forEach(function(o, index){
-                                  preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, 'show')
+                                  preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0,  'show')
 
                              });
 
@@ -514,11 +590,10 @@ $("#btnInserir").click(function(){
                     });
 
               } else {
-                  console.log("flag cabeçalho do movimento")
                   $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "https://ezbi-pannemix.herokuapp.com/movimento",
+                          url: "http://ezbi-pannemix.herokuapp.com/movimento",
                           data: {cab: cabecalho, prod: produtos, flag: 0},
                           success: function(dt){
 
@@ -526,7 +601,7 @@ $("#btnInserir").click(function(){
 
                             $(".showProdutos tr").remove()
                             obj.forEach(function(o, index){
-                                  preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, 'show')
+                                  preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0,  'show')
 
                              });
 
@@ -574,7 +649,7 @@ $('#btnFinalizar').click(function(){
         $.ajax({
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "https://ezbi-pannemix.herokuapp.com/fimMovimento",
+                          url: "http://ezbi-pannemix.herokuapp.com/fimMovimento",
                           data: {flag: varStorage, cab: cab},
                           success: function(dt){
 
@@ -618,7 +693,6 @@ function lerCabecalho(){
                 data : $('#idData').val()
           }
 
-          console.log(dados)
           return JSON.stringify(dados)
 }
 
@@ -626,14 +700,22 @@ function lerCabecalho(){
 function lerTabela(){
 
       var produtos = [];
-      var lista = $('tbody');
-      var input = $('#vlPrd')
+      var lista = $('.lpTbody');
+      // var input = $('#vlPrd')
+      // var input2 = $('#vlPrdLiq')
+      
 
-      $(lista).find("tr").each(function(index, tr) {
+      $(lista).find('tr').each(function(index, tr) {
+
+        var vlLiquido = 0
+        if ($(tr).find('input:eq(1)').val()){
+          vlLiquido = $('tr').find('input:eq(1)').val()
+        }
          produtos.push(JSON.stringify(
                       { "cdProduto": $(tr).find('td:eq(0)').html(),
                         "nmProduto": $(tr).find('td:eq(1)').html(),
-                        "valor":     $(tr).find('input:eq(0)').val()
+                        "valor":     $(tr).find('input:eq(0)').val(),
+                        "valorLiquido": vlLiquido
                       }))
       });
 
@@ -646,14 +728,11 @@ function lerTabela(){
 
 function checaLocalStorage(){
 
-      console.log("Removendo o Item")
       localStorage.removeItem('itemPannemix')
 
       if (localStorage.getItem("itemPannemix") === null) {
-          console.log("Item não existente")
       }
 
-      console.log("Item Adicionado")
       localStorage.setItem('itemPannemix', 'Daniel');
 
 
@@ -671,7 +750,7 @@ window.onload = (function(){
 
                           type:"POST",
                           headers: {'X-CSRFToken': csrftoken},
-                          url: "https://ezbi-pannemix.herokuapp.com/getEditar",
+                          url: "http://ezbi-pannemix.herokuapp.com/getEditar",
                           data: {dados: varStorage},
                           success: function(dt){
                            
@@ -683,8 +762,6 @@ window.onload = (function(){
                             $('#idData').val(obj[0].cdmovimentacao__dtmovimentacao)
                             // document.getElementById("idData").value = obj[0].cdmovimentacao__dtmovimentacao
 
-                            console.log(obj[0].cdmovimentacao__dtmovimentacao)
-
                               var radio = document.getElementsByName('inpTpMovi')
                               for(var i = 0; i <= radio.length -1; i++){
                                 if(radio[i].value == obj[0].cdmovimentacao__cdtipomovimento__nmtipomovimento ){
@@ -695,7 +772,7 @@ window.onload = (function(){
 
                             obj.forEach(function(o, index){
 
-                              preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, 'show')
+                              preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0,  'show')
 
 
                              });

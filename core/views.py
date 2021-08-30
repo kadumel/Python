@@ -57,17 +57,40 @@ def filtroMovimento(request):
         prod = request.POST.get('produto')
         cdsbgp = request.POST.get('subgrupo')
         cdgp = request.POST.get('grupo')
+        idMov = request.POST.get('idMov')
 
-        print(prod, cdsbgp, cdgp)
+        print('produto: ',prod, ' SubGrupo: ', cdsbgp, ' Grupo: ', cdgp, ' idMovimento: ', idMov)
         if prod != '':
-            produtos = Produto.objects.filter(cdproduto=prod, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
-            dados = JsonResponse(list(produtos), safe=False)
+            produtos = Produto.objects.filter(cdproduto=prod, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade', 'percPerda')
         elif  cdsbgp != '':
-            produtos = Produto.objects.filter(cdsubgrupo=cdsbgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
-            dados = JsonResponse(list(produtos), safe=False)
+            produtos = Produto.objects.filter(cdsubgrupo=cdsbgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade', 'percPerda')
         else:
-            print(cdgp)
-            produtos = Produto.objects.filter(cdsubgrupo__cdGrupo=cdgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade')
+            produtos = Produto.objects.filter(cdsubgrupo__cdGrupo=cdgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade', 'percPerda')
+            
+        print(produtos)
+        if idMov != 0:
+            lista = []
+            for i in produtos:
+
+
+                print(i)
+                valores = Itemmovimentado.objects.filter(cdmovimentacao=idMov, cdproduto=i['cdproduto']).values('valor', 'valorLiquido')
+
+                valor = valores[0]['valor'] if valores else None
+                valorLiquido = valores[0]['valorLiquido'] if valores else None
+
+                print(valores, '-', valor, '-', valorLiquido)
+                dados = {
+                    "cdProduto" : i['cdproduto'],
+                    "nmProduto" : i['nmproduto'],
+                    "unidade"   : i['cdunidade__nmUnidade'],
+                    "percPerda" : i['percPerda'],
+                    "valor" : valor,
+                    "valorLiquido" : valorLiquido 
+                }
+                lista.append(dados)
+            dados = JsonResponse(lista, safe=False)
+        else:
             dados = JsonResponse(list(produtos), safe=False)
         
         return HttpResponse(dados)
@@ -104,41 +127,50 @@ def movimento(request):
             idMov = flag
 
         conversao = list(Tipomovimento.objects.filter(nmtipomovimento=cab['movimento']).values('conversao'))[0]['conversao']
-        print(conversao)
+
+
+        print(prod)
         for i in prod:
             d = json.loads(i)
-
             try:
-                if d['valor']:
-                    print('1', d['valor'])
+                if d['valor'] or ['valor'] != '0':
                     pesq = Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov)
-
-                    produto = list(Produto.objects.filter(cdproduto=d['cdProduto']).values('cdunidade', 'cduniconv', 'vlconv' ))
-
-                    print(produto[0]['cdunidade'])
+                    produto = list(Produto.objects.filter(cdproduto=d['cdProduto']).values('cdunidade', 'cduniconv', 'vlconv', 'percPerda' ))
 
                     unidade = produto[0]['cdunidade']
                     unidadeConv = produto[0]['cduniconv']
                     valorConv = float(d['valor']) * produto[0]['vlconv']
 
-                    print('2', pesq)
-                    if pesq:
-                        
-                        if conversao == 'I':
-                            print('3', d, idMov)
-                            Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=d['valor'])
-                            print('3 Finalizado')
-                        else:
-                            
-                            Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=valorConv)
+                    valorLiq = None
 
+                    
+                    if produto[0]['percPerda'] != 0 and produto[0]['percPerda'] != None and d['valorLiquido'] != 0 and d['valorLiquido'] != None:
+
+                        vlAtual = Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).values('valorLiquido')
+                        print(vlAtual)
+                        if vlAtual[0]['valorLiquido'] != float(d['valorLiquido']):
+                            valorLiq = float(d['valorLiquido']) * float( 1 - (produto[0]['percPerda'] / 100))
+                        else:
+                            valorLiq = vlAtual[0]['valorLiquido']                                        
+        
+
+                    # Verifica se o produto já foi inserido e atualiza os valores
+                    if pesq:
+                        # Verifica se a conversão está inativa ou não
+                        if conversao == 'I':
+                            Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=d['valor'], valorLiquido=valorLiq)
+                        else:
+                            Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=valorConv, valorLiquido=valorLiq)
+
+                    #  Insere o produto na movimentação 
                     else:
-                        print('4', d, idMov)
+                        # Verifica se a conversão está inativa ou não 
                         if conversao == 'I':
                             Itemmovimentado.objects.update_or_create(
                                 cdmovimentacao_id=idMov,
                                 cdproduto_id=d['cdProduto'],
                                 valor=d['valor'],
+                                valorLiquido=valorLiq,
                                 cdunidade_id=unidade
                             )
                         else:
@@ -146,20 +178,16 @@ def movimento(request):
                                 cdmovimentacao_id=idMov,
                                 cdproduto_id=d['cdProduto'],
                                 valor=valorConv,
+                                valorLiquido=valorLiq,
                                 cdunidade_id=unidadeConv
                             )
-                        print('4 - FIM')
-                    print('fim do IF d[valor]')
-            except KeyError:
-                pass
+            except ValueError as e:
+                print(e)
+            
 
-        print('5', idMov)
-        dados = Itemmovimentado.objects.filter(cdmovimentacao_id=idMov).values('cdmovimentacao_id','cditemmovimentado', 'cdproduto__nmproduto','cdunidade__nmUnidade', 'valor').order_by('cditemmovimentado')
+        dados = Itemmovimentado.objects.filter(cdmovimentacao_id=idMov).values('cdmovimentacao_id','cditemmovimentado', 'cdproduto__nmproduto','cdunidade__nmUnidade', 'valor', 'valorLiquido').order_by('cditemmovimentado')
 
         dados = json.dumps(list(dados))
-        print(dados)
-
-
 
         return HttpResponse(dados)
 
@@ -391,7 +419,8 @@ def getItens(cd):
             "cdProduto" : i.cdproduto.cdproduto,
             "nmProduto" : i.cdproduto.nmproduto,
             "unidade"   : i.cdunidade.nmUnidade,
-            "valor" : i.valor
+            "valor" : i.valor,
+            "valorLiquido": i.valorLiquido
         }
         lista.append(dados)
 
@@ -414,6 +443,7 @@ def getEditar(request):
                                                                             'cdproduto', 
                                                                             'cdproduto__nmproduto', 
                                                                             'valor', 
+                                                                            'valorLiquido',
                                                                             'cdunidade__nmUnidade',
                                                                             'cditemmovimentado' ).order_by('cditemmovimentado')
 
@@ -432,7 +462,8 @@ def getEditar(request):
                 "cdProduto" : i['cdproduto'],
                 "cdproduto__nmproduto" : i['cdproduto__nmproduto'],
                 "cdunidade__nmUnidade"   : i['cdunidade__nmUnidade'],
-                "valor" : i['valor']
+                "valor" : i['valor'],
+                "valorLiquido" : i["valorLiquido"]
             }
             lista.append(dados)
         print(lista)
