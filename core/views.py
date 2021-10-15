@@ -150,12 +150,12 @@ def movimento(request):
                         print(vlAtual)
                         if vlAtual:
                             if vlAtual[0]['valorLiquido'] != float(d['valorLiquido']):
-                                valorLiq = float(d['valorLiquido']) * float( 1 - (produto[0]['percPerda'] / 100))
+                                valorLiq = float(d['valorLiquido']) #* float( 1 - (produto[0]['percPerda'] / 100))
                             else:
                                 valorLiq = vlAtual[0]['valorLiquido'] 
                         else:
                             if d['valorLiquido']:
-                                valorLiq = float(d['valorLiquido']) * float( 1 - (produto[0]['percPerda'] / 100)) 
+                                valorLiq = float(d['valorLiquido']) #* float( 1 - (produto[0]['percPerda'] / 100)) 
                             else:
                                 valorLiq = 0                                     
         
