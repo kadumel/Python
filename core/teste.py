@@ -12,3 +12,6 @@ data = '2021-08-16'
 hota = str(dt.today().time())
 
 print(data,'', hota)
+
+
+print('daniel é bonitao')
