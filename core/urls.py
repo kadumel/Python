@@ -1,10 +1,11 @@
 from django.urls import path
-from .views import excluirItem, excluirMovi, getAll, getEditar, index, filtroConsulta, filtroMovimento, movimento, finalizarMov, acompanhamentoMov,filtroSubgrupo
+from .views import excluirItem, excluirMovi, getAll, getEditar, importData, index, filtroConsulta, filtroMovimento, movimento, finalizarMov, acompanhamentoMov,filtroSubgrupo
 
 
 urlpatterns = [
     path('insert', index, name="index"),
     path('', filtroConsulta, name="filtro_consulta"),
+    path('importData', importData),
     path('movimento', movimento),
     path('filtroMovimento', filtroMovimento, name="filtro_teste"),
     path('fimMovimento', finalizarMov),

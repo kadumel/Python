@@ -119,6 +119,7 @@ class Produto(models.Model):
     cduniconv = models.ForeignKey("TipoUnidade", on_delete=models.PROTECT, related_name='Conversao')
     vlconv = models.FloatField()
     percPerda = models.FloatField(db_column='percPerdaDesc', blank=True, null=True)
+    cdunipadrao = models.ForeignKey("TipoUnidade", on_delete=models.PROTECT, related_name='Padrao')
     class Meta:
         managed = False
         ordering = ['nmproduto']

@@ -56,7 +56,7 @@
       <p>Tipo de Movimentação:</p>
       <div>
         {% for tp_mv in tipo_movimento %}
-         <input style="margin:5px;" type="radio" class="rdButton" id="inputTipoM" name="inpTpMovi" value="{{tp_mv.nmtipomovimento}}" checked>
+         <input style="margin:5px;" type="radio" class="rdButton" id="inputTipoM" name="inpTpMovi" value="{{tp_mv.nmtipomovimento}}">
         <label for="inputTipoM">{{tp_mv.nmtipomovimento}}</label>
         {% endfor %}
       </div>
@@ -324,10 +324,27 @@ function getCookie(name) {
     });
 
 
+    function radioChecked(){
+
+      var movimento = null
+              var radio = document.getElementsByName('inpTpMovi')
+
+              for(var i = 0; i <= radio.length -1; i++){
+                if ( radio[i].checked == true ){
+                    movimento = radio[i].value
+                }
+              }    
+
+        return movimento 
+              
+    }
+
+
 
     function consultaProduto(){
 
-      var movimento = $("#inputTipoM").val();
+          var movimento = radioChecked()
+         
           var idloja = $("#inputLoja2").val();
           var loja = $('#LojaComplete [value="' + idloja + '"]').data('value')
 
@@ -344,6 +361,7 @@ function getCookie(name) {
           const varStorage = localStorage.getItem("idMovPannemix")
             
 
+          if (movimento){
             if (varStorage) {
 
               $.ajax({
@@ -381,9 +399,10 @@ function getCookie(name) {
                       });
                   }
               });
-
-
             }
+          }else{
+            alert('Escolha um tipo de movimentação!!!')
+          }
     }
 
 
@@ -562,6 +581,9 @@ function excluirItem(){
 $("#btnInserir").click(function(){
 
 
+    var movimento = radioChecked()
+
+    if(movimento) {
 
        produtos = lerTabela()
        cabecalho = lerCabecalho()
@@ -632,6 +654,9 @@ $("#btnInserir").click(function(){
                   
 
               }
+            }else{
+              alert('Escolha um tipo de movimentação!!!')
+            }
 
 });
 

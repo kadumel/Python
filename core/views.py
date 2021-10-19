@@ -1,3 +1,4 @@
+from django.core.exceptions import TooManyFieldsSent
 from django.shortcuts import render, get_object_or_404
 from .models import Acesso, Tipomovimento, Grupo, Subgrupo, Loja, Produto, Movimentacao, Itemmovimentado, Status
 from .forms import LojaForm, TipoMovientoForm, GrupoForm, SubGrupoForm, ProdutoForm
@@ -44,6 +45,7 @@ def filtroConsulta(request):
 
     return render(request, 'core/filtro.html', {'lojas': lojas, "tipoMovimento":tp_mv, "usuario": user, "status": status })
 
+
 @login_required
 def filtroMovimento(request):
 
@@ -58,16 +60,29 @@ def filtroMovimento(request):
         cdsbgp = request.POST.get('subgrupo')
         cdgp = request.POST.get('grupo')
         idMov = request.POST.get('idMov')
+        tpMovimento = request.POST.get('movimento')
 
-        print('produto: ',prod, ' SubGrupo: ', cdsbgp, ' Grupo: ', cdgp, ' idMovimento: ', idMov)
-        if prod != '':
-            produtos = Produto.objects.filter(cdproduto=prod, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade', 'percPerda')
-        elif  cdsbgp != '':
-            produtos = Produto.objects.filter(cdsubgrupo=cdsbgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade', 'percPerda')
+        conversao = list(Tipomovimento.objects.filter(nmtipomovimento=tpMovimento).values('conversao'))[0]['conversao']
+
+        print(tpMovimento)
+        
+        if conversao == 'A':
+            if prod != '':
+                produtos = Produto.objects.filter(cdproduto=prod, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade', 'percPerda')
+            elif  cdsbgp != '':
+                produtos = Produto.objects.filter(cdsubgrupo=cdsbgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade', 'percPerda')
+            else:
+                produtos = Produto.objects.filter(cdsubgrupo__cdGrupo=cdgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade', 'percPerda')
         else:
-            produtos = Produto.objects.filter(cdsubgrupo__cdGrupo=cdgp, ativo='A').values('cdproduto','nmproduto', 'cdunidade__nmUnidade', 'percPerda')
+            if prod != '':
+                produtos = Produto.objects.filter(cdproduto=prod, ativo='A').values('cdproduto','nmproduto', 'cdunipadrao__nmUnidade', 'percPerda')
+            elif  cdsbgp != '':
+                produtos = Produto.objects.filter(cdsubgrupo=cdsbgp, ativo='A').values('cdproduto','nmproduto', 'cdunipadrao__nmUnidade', 'percPerda')
+            else:
+                produtos = Produto.objects.filter(cdsubgrupo__cdGrupo=cdgp, ativo='A').values('cdproduto','nmproduto', 'cdunipadrao__nmUnidade', 'percPerda')
             
-        print(produtos)
+
+            
         if idMov != 0:
             lista = []
             for i in produtos:
@@ -80,10 +95,11 @@ def filtroMovimento(request):
                 valorLiquido = valores[0]['valorLiquido'] if valores else None
 
                 print(valores, '-', valor, '-', valorLiquido)
+                uni = i['cdunidade__nmUnidade'] if conversao == 'A' else i['cdunipadrao__nmUnidade']
                 dados = {
                     "cdProduto" : i['cdproduto'],
                     "nmProduto" : i['nmproduto'],
-                    "unidade"   : i['cdunidade__nmUnidade'],
+                    "unidade"   : uni ,
                     "percPerda" : i['percPerda'],
                     "valor" : valor,
                     "valorLiquido" : valorLiquido 
@@ -135,10 +151,11 @@ def movimento(request):
             try:
                 if d['valor'] and ['valor'] != '0':
                     pesq = Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov)
-                    produto = list(Produto.objects.filter(cdproduto=d['cdProduto']).values('cdunidade', 'cduniconv', 'vlconv', 'percPerda' ))
+                    produto = list(Produto.objects.filter(cdproduto=d['cdProduto']).values('cdunidade', 'cduniconv','cdunipadrao', 'vlconv', 'percPerda' ))
 
                     unidade = produto[0]['cdunidade']
                     unidadeConv = produto[0]['cduniconv']
+                    unidadePadrao = produto[0]['cdunipadrao']
                     valorConv = float(d['valor']) * produto[0]['vlconv']
 
                     valorLiq = None
@@ -147,7 +164,7 @@ def movimento(request):
                     if produto[0]['percPerda'] != 0 and produto[0]['percPerda'] != None and d['valorLiquido'] != 0 and d['valorLiquido'] != None:
 
                         vlAtual = Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).values('valorLiquido')
-                        print(vlAtual)
+                        # print(vlAtual)
                         if vlAtual:
                             if vlAtual[0]['valorLiquido'] != float(d['valorLiquido']):
                                 valorLiq = float(d['valorLiquido']) #* float( 1 - (produto[0]['percPerda'] / 100))
@@ -164,9 +181,9 @@ def movimento(request):
                     if pesq:
                         # Verifica se a conversão está inativa ou não
                         if conversao == 'I':
-                            Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=d['valor'], valorLiquido=valorLiq)
+                            Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=d['valor'], cdunidade_id=unidadePadrao , valorLiquido=valorLiq)
                         else:
-                            Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=valorConv, valorLiquido=valorLiq)
+                            Itemmovimentado.objects.filter(cdproduto_id= d['cdProduto'], cdmovimentacao_id=idMov).update(valor=valorConv, cdunidade_id=unidadeConv, valorLiquido=valorLiq)
 
                     #  Insere o produto na movimentação 
                     else:
@@ -177,7 +194,7 @@ def movimento(request):
                                 cdproduto_id=d['cdProduto'],
                                 valor=d['valor'],
                                 valorLiquido=valorLiq,
-                                cdunidade_id=unidade
+                                cdunidade_id=unidadePadrao
                             )
                         else:
                             Itemmovimentado.objects.update_or_create(
@@ -190,8 +207,8 @@ def movimento(request):
             except ValueError as e:
                 print(e)
             
-
         dados = Itemmovimentado.objects.filter(cdmovimentacao_id=idMov).values('cdmovimentacao_id','cditemmovimentado', 'cdproduto__nmproduto','cdunidade__nmUnidade', 'valor', 'valorLiquido').order_by('cditemmovimentado')
+       
 
         dados = json.dumps(list(dados))
 
@@ -370,8 +387,6 @@ def adminORnormal(request):
         lojas = Loja.objects.filter(cdloja__in=i)
     else:
         lojas = Loja.objects.all()
-
-
     return lojas
 
 
@@ -467,7 +482,7 @@ def getEditar(request):
                 'cdmovimentacao__cdtipomovimento__conversao' : i['cdmovimentacao__cdtipomovimento__conversao'], 
                 "cdProduto" : i['cdproduto'],
                 "cdproduto__nmproduto" : i['cdproduto__nmproduto'],
-                "cdunidade__nmUnidade"   : i['cdunidade__nmUnidade'],
+                "cdunidade__nmUnidade"  : i['cdunidade__nmUnidade'],
                 "valor" : i['valor'],
                 "valorLiquido" : i["valorLiquido"]
             }
@@ -528,3 +543,12 @@ def excluirItem(request):
 
     else:
         raise Http404
+
+
+
+@login_required
+def importData(request):
+
+    lojas = adminORnormal(request)
+
+    return render(request, 'core/importaDados.html', {'lojas': lojas, "tipoMovimento":tp_mv, "usuario": user, "status": status })
