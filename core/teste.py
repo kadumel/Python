@@ -5,13 +5,12 @@ from datetime import datetime as dt
 
 
 
-data = '2021-08-16'
+data = '02/10/2021'
 
-# alt =  dt.strptime(data, "%d %B, %Y").date()
+alt =  dt.strptime(data, "%d/%m/%Y")
 
-hota = str(dt.today().time())
 
-print(data,'', hota)
+print(alt)
 
 
 print('daniel é bonitao')

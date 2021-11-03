@@ -1,12 +1,17 @@
+import datetime
 from django.core.exceptions import TooManyFieldsSent
-from django.shortcuts import render, get_object_or_404
+from django.db.models.fields import NullBooleanField
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Acesso, Tipomovimento, Grupo, Subgrupo, Loja, Produto, Movimentacao, Itemmovimentado, Status
 from .forms import LojaForm, TipoMovientoForm, GrupoForm, SubGrupoForm, ProdutoForm
 from django.http import HttpResponse, Http404, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib import messages
 import json
 from datetime import datetime as dt
+from tablib import Dataset
+from .resources import MovimentacaoResource
 # Create your views here.
 
 
@@ -549,6 +554,81 @@ def excluirItem(request):
 @login_required
 def importData(request):
 
-    lojas = adminORnormal(request)
+    if request.method == 'POST':
 
-    return render(request, 'core/importaDados.html', {'lojas': lojas, "tipoMovimento":tp_mv, "usuario": user, "status": status })
+        dataset = Dataset()
+        new_mov = request.FILES['myfile']
+        imported_data = dataset.load(new_mov.read())
+
+        listDate = []
+        cliente = None
+        listProdutos = []
+        listProdutoErro = []
+
+        for i in imported_data:
+
+            # Agrupamento das datas
+            if not i[4] in listDate:
+                listDate.append(i[4])
+
+             # Agrupamento dos produtos
+            if not i[2] in listProdutos:
+                listProdutos.append(i[2])
+
+            # Codigo da empresa
+            if cliente == None:
+                cliente = Loja.objects.filter(nmloja=i[3]).values("cdloja")[0]['cdloja']
+                
+
+        # Verifica se o produto existe no cadastro
+        listAllProduct = []
+        for v in listProdutos:
+            print(v)
+            idProduto = list(Produto.objects.filter(nmproduto=v).values("cdproduto", "nmproduto"))
+            listAllProduct.append(idProduto)
+
+            print(idProduto)
+            if not idProduto:
+                listProdutoErro.append(v)
+
+        
+        print(listProdutoErro   )  
+        if not listProdutoErro and cliente != None:
+
+            for x in listDate:
+
+                print('inserindo cabeçalho')
+                # Preenchimento do cabeçalho da movimentação
+                data = dt.strptime(x, "%d/%m/%Y")
+                print
+                idMovimentacao = Movimentacao.objects.create(cdtipomovimento_id = 3,
+                                                            user_id = User.objects.filter(username=request.user).values('id'),
+                                                            cdloja_id = cliente,
+                                                            dtmovimentacao = data,
+                                                            status_id = 3).pk
+
+
+                for j in imported_data:
+
+                    if j[4] == x:
+
+                        idProduto = list(Produto.objects.filter(nmproduto=j[2]).values("cdproduto", "cduniconv"))
+
+                        Itemmovimentado.objects.update_or_create(
+                                    cdmovimentacao_id=idMovimentacao,
+                                    cdproduto_id= idProduto[0]['cdproduto'],
+                                    valor=j[6],
+                                    valorLiquido=0,
+                                    cdunidade_id=idProduto[0]['cduniconv']
+                                )
+
+            messages.info(request, 'Importação realizada com sucesso!!!')
+            return redirect('/importData')
+
+        else:
+            
+            return HttpResponse(json.dumps(listProdutoErro))
+            
+
+    # return render(request, 'core/importaDados.html') 
+    return render(request, 'core/importaDados.html') 

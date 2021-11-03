@@ -47,17 +47,27 @@
         <br><br>
         <h5>Importação de dados</h5>
         <br>
-        <form>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+
+          {% if messages %}
+            {% for m in messages %}
+              <div class="alert alert-warning" role="alert">
+              {{ m }}
+             </div>
+            {% endfor %}
+          {% endif %}
+
+          
             <i class="fal fa-trash-alt">
             <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="idDataInicial">Arquivo:</label>
-                    <input type="file" class="form-control" id="idArquivo" placeholder="Data inicial">
-                </div>
+                    <label>Arquivo:</label>
+                    <input type="file" class="form-control" id="idArquivo" name="myfile">
             </div>
-            
-            <a href="#" id="idConsultar" class="badge badge-primary" style="font-size: 16px" >Consultar</a>
-            <a href="http://ezbi-pannemix.herokuapp.com/insert" id="idInserir" class="badge badge-success" style="font-size: 16px" >Novo</a>
+            <br>
+            <button type="submit" id="idExecutar" class="btn btn-primary">Importar</button>
+            <button type="button" id="idVoltar" class="btn btn-info" onclick="location.href='/'">Voltar</button>
             <br><br>
         </form>
         
