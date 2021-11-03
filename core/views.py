@@ -578,6 +578,8 @@ def importData(request):
             # Codigo da empresa
             if cliente == None:
                 cliente = Loja.objects.filter(nmloja=i[3]).values("cdloja")[0]['cdloja']
+                if cliente:
+                    listProdutoErro.append(cliente)
                 
 
         # Verifica se o produto existe no cadastro
