@@ -136,6 +136,8 @@ def movimento(request):
 
         idCadatro = None
         dados = 'Error'
+        global flagCadastro
+        flagCadastro = 0
 
         idCadatro = Movimentacao.objects.filter(
                                                 cdtipomovimento_id = pkModels('tpMov', cab['movimento']),
@@ -156,8 +158,9 @@ def movimento(request):
                             status_id = 2).pk
 
                 idMov = mov
-            # else:
-            #     messages.info(request, 'Já existem lançamentos para essa Loja com essa movimentação!!!')
+                
+            else:
+                 flagCadastro = 1
 
         else:
             idMov = flag
@@ -166,7 +169,7 @@ def movimento(request):
 
 
         # print(prod)
-        if not idCadatro:
+        if flagCadastro == 0:
             for i in prod:
                 d = json.loads(i)
                 try:
