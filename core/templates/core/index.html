@@ -148,6 +148,10 @@
 
   <form>
     {% csrf_token %}
+
+    <!-- Menssagem de erro caso já tenha uma movimentação para essa loja com a mesma data -->
+    <div class="alertErro alert-danger" > Lançamento já registrado!!! </div>
+
     <h2>Lista de produtos</h2>
     <table class="table table-striped" id="tbInsert">
       <thead>
@@ -232,6 +236,8 @@ var data =  new Date()
 
 document.getElementById("idData").valueAsDate = data
 
+$('.alertErro').hide()
+
  $('#inputLoja2').click(function(){
     this.value = ''
     $('#Lojacomplete').prop('selectedIndex',0)
@@ -261,6 +267,8 @@ $('#inputProduto').focusout(function(){
     }
 
 })
+
+
 
 $('#inputGrupo').blur(function(){
 
@@ -319,7 +327,12 @@ function getCookie(name) {
 
     $("#consultar").click(function(){
 
-          consultaProduto()
+      if ( $("#inputGrupo").val() || $("#inputSubGrupo").val() || $("#inputProduto").val()){
+            consultaProduto()
+
+            }else{
+              alert('Escolha um grupo, subgrupo ou produto!!!')
+            }  
     });
 
 
@@ -343,6 +356,8 @@ function getCookie(name) {
     function consultaProduto(){
 
           var movimento = radioChecked()
+
+          $('.alertErro').hide()
          
           var idloja = $("#inputLoja2").val();
           var loja = $('#LojaComplete [value="' + idloja + '"]').data('value')
@@ -361,44 +376,45 @@ function getCookie(name) {
             
 
           if (movimento){
-            if (varStorage) {
+              if (varStorage) {
 
-              $.ajax({
-                  type:"POST",
-                  headers: {'X-CSRFToken': csrftoken},
-                  url: "http://ezbi-pannemix.herokuapp.com/filtroMovimento",
-                  data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto, idMov: varStorage},
-                  success: function(dt){
+                $.ajax({
+                    type:"POST",
+                    headers: {'X-CSRFToken': csrftoken},
+                    url: "http://ezbi-pannemix.herokuapp.com/filtroMovimento",
+                    data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto, idMov: varStorage},
+                    success: function(dt){
 
-                      var obj = JSON.parse(dt)
-                    
-                      $(".lpTbody tr").remove()
-                      obj.forEach(function(o, index){
-                            preecheTabela(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido, o.percPerda,  'insert')
+                        var obj = JSON.parse(dt)
+                      
+                        $(".lpTbody tr").remove()
+                        obj.forEach(function(o, index){
+                              preecheTabela(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido, o.percPerda,  'insert')
 
-                      });
-                  }
-              });
+                        });
+                    }
+                });
 
-            }else{
+              }else{
 
-              $.ajax({
-                  type:"POST",
-                  headers: {'X-CSRFToken': csrftoken},
-                  url: "http://ezbi-pannemix.herokuapp.com/filtroMovimento",
-                  data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto, idMov: 0},
-                  success: function(dt){
+                $.ajax({
+                    type:"POST",
+                    headers: {'X-CSRFToken': csrftoken},
+                    url: "http://ezbi-pannemix.herokuapp.com/filtroMovimento",
+                    data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto, idMov: 0},
+                    success: function(dt){
 
-                      var obj = JSON.parse(dt)
-                    
-                      $(".lpTbody tr").remove()
-                      obj.forEach(function(o, index){
-                            preecheTabela(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido, o.percPerda,   'insert')
+                        var obj = JSON.parse(dt)
+                      
+                        $(".lpTbody tr").remove()
+                        obj.forEach(function(o, index){
+                              preecheTabela(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido, o.percPerda,   'insert')
 
-                      });
-                  }
-              });
-            }
+                        });
+                    }
+                });
+              }
+         
           }else{
             alert('Escolha um tipo de movimentação!!!')
           }
@@ -599,15 +615,22 @@ $("#btnInserir").click(function(){
                           data: {cab: cabecalho, prod: produtos, flag: varStorage},
                           success: function(dt){
 
-                            var obj = JSON.parse(dt)
+                            console.log('teste de retorno mensagem', dt)
+                            if (dt != 'Error'){
+                                var obj = JSON.parse(dt)
 
-                            $(".showProdutos tr").remove()
-                            obj.forEach(function(o, index){
-                                  preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0,  'show')
+                                $(".showProdutos tr").remove()
+                                obj.forEach(function(o, index){
+                                      preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0,  'show')
 
-                             });
+                                 });
 
-                             excluirItem()
+                                 excluirItem()
+
+                            }else{
+                              $('.alertErro').show()
+                            }
+
                           }
                     });
 
@@ -619,22 +642,28 @@ $("#btnInserir").click(function(){
                           data: {cab: cabecalho, prod: produtos, flag: 0},
                           success: function(dt){
 
-                            var obj = JSON.parse(dt)
+                            console.log('teste de retorno mensagem', dt)
+                            if (dt != 'Error'){
 
-                            $(".showProdutos tr").remove()
-                            obj.forEach(function(o, index){
-                                  preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0,  'show')
+                                var obj = JSON.parse(dt)
 
-                             });
+                                $(".showProdutos tr").remove()
+                                obj.forEach(function(o, index){
+                                      preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0,  'show')
 
-                             localStorage.setItem('idMovPannemix',obj[0].cdmovimentacao_id);
+                                });
+
+                                localStorage.setItem('idMovPannemix',obj[0].cdmovimentacao_id);
                              
-                             $('.rdButton').attr("disabled", true);
-                             $('#inputLoja2').attr("disabled", true);
+                                $('.rdButton').attr("disabled", true);
+                                $('#inputLoja2').attr("disabled", true);
                              
                              
-                             excluirItem()
+                                excluirItem()
                              
+                              }else{
+                                $('.alertErro').show()
+                              }
                             }
                     });
                    }
@@ -767,6 +796,7 @@ function checaLocalStorage(){
 
 window.onload = (function(){
 
+  
   const varStorage = localStorage.getItem("idMovPannemix")
 
   if(varStorage){
@@ -780,6 +810,8 @@ window.onload = (function(){
                           success: function(dt){
                            
                             var obj = JSON.parse(dt)
+
+                            console.log(dt)
 
                             $(".showProdutos tr").remove()
                             $('#inputLoja2').val(obj[0].cdmovimentacao__cdloja__nmloja)
