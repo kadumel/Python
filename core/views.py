@@ -293,55 +293,71 @@ def acompanhamentoMov(request):
             superUser = i['is_superuser']
 
 
-        print('tipo de dadps -', id, superUser)
-        if superUser  == True:
+        lojasID = adminORnormal(request)
+
+        usuario = None
+        if dados['usuario']:
             usuario = pkModels('user', dados['usuario'])
-        else:
-            usuario = id
 
 
         # Apenas Um Filtro
         if loja != None and usuario == None and tipoMov ==None and status == None:
-            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, cdloja_id=loja ).order_by('dtmovimentacao')
+            print('1 - Filtro')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, cdloja_id__in=lojasID ).order_by('dtmovimentacao')
         elif loja == None and usuario != None and tipoMov ==None and status == None:
-            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, user_id= usuario ).order_by('dtmovimentacao')
+            print('2 - Filtro')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, user_id= usuario, cdloja_id__in=lojasID  ).order_by('dtmovimentacao')
         elif loja == None and usuario == None and tipoMov !=None and status == None:
-            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, cdtipomovimento_id=tipoMov ).order_by('dtmovimentacao')
+            print('3 - Filtro')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, cdtipomovimento_id=tipoMov, cdloja_id__in=lojasID  ).order_by('dtmovimentacao')
         elif loja == None and usuario == None and tipoMov ==None and status != None:
-            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, status_id=status ).order_by('dtmovimentacao')
+            print('4 - Filtro')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, status_id=status, cdloja_id__in=lojasID  ).order_by('dtmovimentacao')
 
         # Dois Filtros
         #  Loja
         elif loja != None and usuario != None and tipoMov ==None and status == None:
+            print('5 - Filtro')
             x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, cdloja_id=loja, user_id= usuario ).order_by('dtmovimentacao')
         elif loja != None and usuario == None and tipoMov !=None and status == None:
+            print('6 - Filtro')
             x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, cdloja_id=loja, cdtipomovimento_id=tipoMov ).order_by('dtmovimentacao')
         elif loja != None and usuario == None and tipoMov ==None and status != None:
+            print('7 - Filtro')
             x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, cdloja_id=loja, status_id=status ).order_by('dtmovimentacao')
         elif loja == None and usuario != None and tipoMov != None and status == None:
-            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, user_id= usuario, cdtipomovimento_id=tipoMov).order_by('dtmovimentacao')
+            print('8 - Filtro')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, user_id= usuario, cdtipomovimento_id=tipoMov, cdloja_id__in=lojasID ).order_by('dtmovimentacao')
         elif loja == None and usuario != None and tipoMov == None and status != None:
-            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, user_id= usuario, status_id=status).order_by('dtmovimentacao')
+            print('9 - Filtro')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, user_id= usuario, status_id=status, cdloja_id__in=lojasID ).order_by('dtmovimentacao')
         elif loja == None and usuario == None and tipoMov != None and status != None:
-            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, cdtipomovimento_id=tipoMov, status_id=status).order_by('dtmovimentacao')
+            print('10 - Filtro')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, cdtipomovimento_id=tipoMov, status_id=status, cdloja_id__in=lojasID ).order_by('dtmovimentacao')
 
         # Tres FIltros
         elif loja != None and usuario != None and tipoMov != None and status == None:
+            print('11 - Filtro')
             x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, cdloja_id=loja, user_id= usuario, cdtipomovimento_id=tipoMov).order_by('dtmovimentacao')
         elif loja != None and usuario != None and tipoMov == None and status != None:
+            print('12 - Filtro')
             x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, cdloja_id=loja, user_id= usuario, status_id=status).order_by('dtmovimentacao')
         elif loja == None and usuario != None and tipoMov != None and status != None:
-            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, user_id= usuario, cdtipomovimento_id=tipoMov,  status_id=status).order_by('dtmovimentacao')
+            print('13 - Filtro')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, user_id= usuario, cdtipomovimento_id=tipoMov,  status_id=status, cdloja_id__in=lojasID ).order_by('dtmovimentacao')
         elif loja != None and usuario == None and tipoMov != None and status != None:
-            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, cdloja_id=loja, cdtipomovimento_id=tipoMov, status_id=status ).order_by('dtmovimentacao')
+            print('14 - Filtro')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, cdloja_id=loja, cdtipomovimento_id=tipoMov, status_id=status, cdloja_id__in=lojasID  ).order_by('dtmovimentacao')
 
         # Quatro Filtros
         elif loja != None and usuario != None and tipoMov != None and status != None:
+            print('15 - Filtro')
             x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal,cdloja_id=loja, user_id= usuario, cdtipomovimento_id=tipoMov, status_id=status ).order_by('dtmovimentacao')
 
         # Somente com o filtro de data
         else:
-            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal).order_by('dtmovimentacao')
+            print('16 - Filtro')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, cdloja_id__in=lojasID ).order_by('dtmovimentacao')
 
 
         lista = []

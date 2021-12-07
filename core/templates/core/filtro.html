@@ -250,6 +250,7 @@ function getCookie(name) {
                           data: JSON.stringify({data: dados}),
                           success: function(dt){
 
+                                console.log(dt)
                                 var obj = JSON.parse(dt)
 
                                  $(".lpTbody tr").remove()
