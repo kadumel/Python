@@ -784,7 +784,8 @@ def desfazerImportacao(request):
                     
                     for it in itens_encontados:
                         base_item = Itemmovimentado.objects.filter(cdmovimentacao=it).delete()                            
-                        base.delete()
+                    
+                    base.delete()
                     messages.success(request, "Importação desfeita com sucesso.")
                 else:
                     messages.warning(request, "Não foi encontrado nenhuma informação referente.")
