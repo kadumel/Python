@@ -6,136 +6,139 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Document</title>
-    
-  <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet/text" href="{% static 'css/styles.css' %}">
 
-    </head>
+    <title>Pannemix - Filtro</title>
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet/text" href="{% static 'css/styles.css' %}">
+
+</head>
 
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-      <img src="https://i.ibb.co/h7wg3jn/Logo.png">
-<!--    <a class="navbar-brand" href="#">Navbar</a>-->
+        <img src="https://i.ibb.co/h7wg3jn/Logo.png">
+        <!--    <a class="navbar-brand" href="#">Navbar</a>-->
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <!-- <li class="nav-item">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <!-- <li class="nav-item">
           <a class="nav-link" href="{% url 'index' %}" style="margin: 20px">Movimentação</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'filtro_consulta' %}" style="margin: 20px">Controle</a>
         </li> -->
 
-        {% if user.groups.all.0.name == "Administrador" %}
-         </li class="nav-item">
-            <a class="nav-link" href="/importData" style="margin: 20px">Importação</a>
-         </li>
-         {% endif %}
+                {% if user.groups.all.0.name == "Administrador" %}
+                </li class="nav-item " >
+                <a class="btn btn-success" type="button" href="/importData" style="margin: 20px">Importação</a>
+                </li>
+                {% endif %}
 
 
-         <li class="nav-item">
-          <a class="nav-link" href="/accounts/logout/" style="margin: 20px">Sair</a>
-        </li>
+                <li class="nav-item">
+                    <a class="btn btn-danger" type="button"  href="/accounts/logout/" style="margin: 20px">Sair</a>
+                </li>
 
-      </ul>
-    </div>
-  </nav>
-      
+            </ul>
+        </div>
+    </nav>
+
     <div class="container">
         <br><br>
         <h5>Controle de movimentações</h5>
         <br>
         <form>
             <i class="fal fa-trash-alt">
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="idDataInicial">Data inicial</label>
-                    <input type="date" class="form-control" id="idDataInicial" placeholder="Data inicial">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="idDataInicial">Data inicial</label>
+                        <input type="date" class="form-control" id="idDataInicial" placeholder="Data inicial">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="idDataFinal">Data final</label>
+                        <input type="date" class="form-control" id="idDataFinal" placeholder="Data final">
+                    </div>
                 </div>
-                <div class="form-group col-md-3">
-                    <label for="idDataFinal">Data final</label>
-                    <input type="date" class="form-control" id="idDataFinal" placeholder="Data final">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="idLoja">Loja</label>
-                    <input list="Lojacomplete" class="form-control" id="idLoja" >
-                    <datalist id="Lojacomplete">
-                        {% for result in lojas %}
-                            <option> {{ result.nmloja }}  </option>
-                        {% endfor %}
-                    </datalist>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="idUsuario2">Usuário</label>
-                    <input list="datasUsuario" class="form-control" id="idUsuario2" >
-                    <datalist id="datasUsuario">
-                        {% for result in usuario %}
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="idLoja">Loja</label>
+                        <input list="Lojacomplete" class="form-control" id="idLoja">
+                        <datalist id="Lojacomplete">
+                            {% for result in lojas %}
+                            <option> {{ result.nmloja }} </option>
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="idUsuario2">Usuário</label>
+                        <input list="datasUsuario" class="form-control" id="idUsuario2">
+                        <datalist id="datasUsuario">
+                            {% for result in usuario %}
                             <option> {{ result.username }} </option>
-                        {% endfor %}
-                    </datalist>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="idTipoMov">Tipo de movimentação</label>
-                    <input list="datasTpMovimentacao" class="form-control" id="idTipoMov" >
-                    <datalist id="datasTpMovimentacao">
-                        {% for result in tipoMovimento %}
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="idTipoMov">Tipo de movimentação</label>
+                        <input list="datasTpMovimentacao" class="form-control" id="idTipoMov">
+                        <datalist id="datasTpMovimentacao">
+                            {% for result in tipoMovimento %}
                             <option> {{ result.nmtipomovimento }} </option>
-                        {% endfor %}
-                    </datalist>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="idStatus2">Status</label>
-                    <input list="dataStatus" class="form-control" id="idStatus2">
-                    <datalist id="dataStatus">
-                        {% for result in status %}
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="idStatus2">Status</label>
+                        <input list="dataStatus" class="form-control" id="idStatus2">
+                        <datalist id="dataStatus">
+                            {% for result in status %}
                             <option> {{ result.nmStatus }} </option>
-                        {% endfor %}
-                    </datalist>
+                            {% endfor %}
+                        </datalist>
+                    </div>
                 </div>
-            </div>
-            <a href="#" id="idConsultar" class="badge badge-primary" style="font-size: 16px" >Consultar</a>
-            <a href="http://ezbi-pannemix.herokuapp.com/insert" id="idInserir" class="badge badge-success" style="font-size: 16px" >Novo</a>
-            <br><br>
+                <a href="#" id="idConsultar" class="badge badge-primary" style="font-size: 16px">Consultar</a>
+                <a href="http://127.0.0.1:8000/insert" id="idInserir" class="badge badge-success"
+                    style="font-size: 16px">Novo</a>
+                <br><br>
         </form>
         <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Cod</th>
-                    <th scope="col">Loja</th>
-                    <th scope="col">Usuário</th>
-                    <th scope="col">Tipo movimentação</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Data Movimentação</th>
-                    <th scope="col">Ações</th>
-                </tr>
-            </thead>
-            <tbody class="lpTbody">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Cod</th>
+                        <th scope="col">Loja</th>
+                        <th scope="col">Usuário</th>
+                        <th scope="col">Tipo movimentação</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Data Movimentação</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="lpTbody">
 
-            </tbody>
-        </table>
-    </div>
+                </tbody>
+            </table>
+        </div>
     </div>
 
- <!-- Modal Visualização dos dados -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
+    <!-- Modal Visualização dos dados -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
                     <h5 class="text-center" id="exampleModalLabel">Produtos cadastrados!!!</h5>
-                  </div>
+                </div>
                 <div>
                     <div class="modal-body">
                         <table class="table table-striped" id="tableModal">
@@ -149,121 +152,124 @@
                                 </tr>
                             </thead>
                             <tbody class="showProdutos">
-                                
+
                             </tbody>
                         </table>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Modal exclusão dos dados -->
+        <div class="modal fade" id="exclusaoModal" tabindex="-2" role="dialog" aria-labelledby="exclusaoModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="text-center" id="exclusaoModalLabel">Produtos cadastrados!!!</h5>
+                    </div>
+                    <div>
+                        <div class="modal-body">
+                            <table class="table table-striped" id="tableModal">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Codigo</th>
+                                        <th scope="col">Produto</th>
+                                        <th scope="col">Uni</th>
+                                        <th scope="col">vlBruto</th>
+                                        <th scope="col">vlLíquido</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="showProdutos">
+
+                                </tbody>
+                            </table>
+                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                         </div>
                     </div>
-                
+
                 </div>
             </div>
-
- <!-- Modal exclusão dos dados -->
- <div class="modal fade" id="exclusaoModal" tabindex="-2" role="dialog" aria-labelledby="exclusaoModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="text-center" id="exclusaoModalLabel">Produtos cadastrados!!!</h5>
-        </div>
-      <div>
-          <div class="modal-body">
-              <table class="table table-striped" id="tableModal">
-                  <thead>
-                      <tr>
-                          <th scope="col">Codigo</th>
-                          <th scope="col">Produto</th>
-                          <th scope="col">Uni</th>
-                          <th scope="col">vlBruto</th>
-                          <th scope="col">vlLíquido</th>
-                      </tr>
-                  </thead>
-                  <tbody class="showProdutos">
-                      
-                  </tbody>
-              </table>
-          </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-              </div>
-          </div>
-      
-      </div>
-  </div>
 
 </body>
 
 
 <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" data-auto-replace-svg="nest"></script>
- <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
-  <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
 
 
 <script type="text/javascript">
 
 
-var data =  new Date()
+    var data = new Date()
 
-document.getElementById("idDataInicial").valueAsDate = data
-document.getElementById("idDataFinal").valueAsDate = data
+    document.getElementById("idDataInicial").valueAsDate = data
+    document.getElementById("idDataFinal").valueAsDate = data
 
 
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
+        return cookieValue;
     }
-    return cookieValue;
-}
 
-        var csrftoken = getCookie('csrftoken');
+    var csrftoken = getCookie('csrftoken');
 
 
 
-    $('#idConsultar').click(function(){
+    $('#idConsultar').click(function () {
 
         console.log('teste  no consultar')
         dados = {
             dataInicial: $('#idDataInicial').val(),
-            dataFinal:  $('#idDataFinal').val(),
-            loja:     $('#idLoja').val(),
+            dataFinal: $('#idDataFinal').val(),
+            loja: $('#idLoja').val(),
             usuario: $('#idUsuario2').val(),
             tipoMov: $('#idTipoMov').val(),
             status: $('#idStatus2').val(),
         }
 
         $.ajax({
-                          type:"POST",
-                          headers: {'X-CSRFToken': csrftoken},
-                          url: "http://ezbi-pannemix.herokuapp.com/listaMov",
-                          data: JSON.stringify({data: dados}),
-                          success: function(dt){
+            type: "POST",
+            headers: { 'X-CSRFToken': csrftoken },
+            url: "http://127.0.0.1:8000/listaMov",
+            data: JSON.stringify({ data: dados }),
+            success: function (dt) {
 
-                                console.log(dt)
-                                var obj = JSON.parse(dt)
+                console.log(dt)
+                var obj = JSON.parse(dt)
 
-                                 $(".lpTbody tr").remove()
-                                  obj.forEach(function(o, index){
-                                  preecheTabela(o.codigo, o.loja, o.usuario, o.tipo, o.status, o.data)
-                                });
+                $(".lpTbody tr").remove()
+                obj.forEach(function (o, index) {
+                    preecheTabela(o.codigo, o.loja, o.usuario, o.tipo, o.status, o.data)
+                });
 
-                                getIdMovimentacao()
-                                editarMovi()
-                                excluirMovi()
-                            
-                          }
-                    });
+                getIdMovimentacao()
+                editarMovi()
+                excluirMovi()
+
+            }
+        });
 
 
     });
@@ -272,7 +278,7 @@ function getCookie(name) {
 
 
 
-    function getIdMovimentacao(){
+    function getIdMovimentacao() {
 
         var idMov = null
         console.log('cheguei aqui')
@@ -287,27 +293,27 @@ function getCookie(name) {
             console.log(idMov);
 
             $.ajax({
-                            type:"POST",
-                            headers: {'X-CSRFToken': csrftoken},
-                            url: "http://ezbi-pannemix.herokuapp.com/visualizarMov",
-                            data: {data: idMov },
-                            success: function(dt){
+                type: "POST",
+                headers: { 'X-CSRFToken': csrftoken },
+                url: "http://127.0.0.1:8000/visualizarMov",
+                data: { data: idMov },
+                success: function (dt) {
 
-                                $(".showProdutos tr").remove()
+                    $(".showProdutos tr").remove()
 
-                                    var obj = JSON.parse(dt)
-                                    obj.forEach(function(o, index){
-                                        console.log(dt)
-                                      preencheTabelaModal(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido)
-                        });
+                    var obj = JSON.parse(dt)
+                    obj.forEach(function (o, index) {
+                        console.log(dt)
+                        preencheTabelaModal(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido)
+                    });
 
-                    }
-                });
+                }
+            });
         }
     }
 
 
-    function editarMovi(){
+    function editarMovi() {
         var idMov = null
         console.log('cheguei aqui Editar')
         var a = document.querySelectorAll('.btnEditar');
@@ -321,14 +327,14 @@ function getCookie(name) {
             console.log(idMov);
 
             localStorage.setItem('idMovPannemix', idMov)
-            href = 'http://ezbi-pannemix.herokuapp.com/insert'
+            href = 'http://127.0.0.1:8000/insert'
             $(window.document.location).attr('href', href);
 
         }
     }
 
 
-    function excluirMovi(){
+    function excluirMovi() {
         var idMov = null
         console.log('cheguei aqui Editar')
         var a = document.querySelectorAll('.btnExcluir');
@@ -342,176 +348,176 @@ function getCookie(name) {
             console.log(idMov);
 
             $.ajax({
-                            type:"POST",
-                            headers: {'X-CSRFToken': csrftoken},
-                            url: "http://ezbi-pannemix.herokuapp.com/excluirMovi",
-                            data: {data: idMov },
-                            success: function(dt){
+                type: "POST",
+                headers: { 'X-CSRFToken': csrftoken },
+                url: "http://127.0.0.1:8000/excluirMovi",
+                data: { data: idMov },
+                success: function (dt) {
 
-                                alert(dt)
+                    alert(dt)
 
-                            }
-                    });
+                }
+            });
 
         }
     }
 
-    function preencheTabelaModal(cd, nm, uni, vl, vlLiq){
+    function preencheTabelaModal(cd, nm, uni, vl, vlLiq) {
 
         var corpoTabela = document.querySelector("tbody.showProdutos")
-           var linha = document.createElement("tr")
+        var linha = document.createElement("tr")
 
-           var codigo = document.createElement("td")
-           var nome = document.createElement("td")
-           var unidade = document.createElement("td")
-           var valor = document.createElement("td")
-           var valorLiquido = document.createElement("td")
-
-
-           var vlCodigo = document.createTextNode(cd)
-           var vlNome = document.createTextNode(nm)
-           var vlUnidade = document.createTextNode(uni)
-
-           var vlValor = document.createTextNode(vl)
-
-           var liquido = 0 
-           if (vlLiq != null){
-                liquido = vlLiq
-           }
-           var vlLiquido = document.createTextNode(liquido)
+        var codigo = document.createElement("td")
+        var nome = document.createElement("td")
+        var unidade = document.createElement("td")
+        var valor = document.createElement("td")
+        var valorLiquido = document.createElement("td")
 
 
-           codigo.appendChild(vlCodigo)
-           nome.appendChild(vlNome)
-           unidade.appendChild(vlUnidade)
-           valor.appendChild(vlValor)
-           valorLiquido.appendChild(vlLiquido)
+        var vlCodigo = document.createTextNode(cd)
+        var vlNome = document.createTextNode(nm)
+        var vlUnidade = document.createTextNode(uni)
+
+        var vlValor = document.createTextNode(vl)
+
+        var liquido = 0
+        if (vlLiq != null) {
+            liquido = vlLiq
+        }
+        var vlLiquido = document.createTextNode(liquido)
 
 
-           linha.appendChild(codigo)
-           linha.appendChild(nome)
-           linha.appendChild(unidade)
-           linha.appendChild(valor)
-           linha.appendChild(valorLiquido)
+        codigo.appendChild(vlCodigo)
+        nome.appendChild(vlNome)
+        unidade.appendChild(vlUnidade)
+        valor.appendChild(vlValor)
+        valorLiquido.appendChild(vlLiquido)
 
-            corpoTabela.appendChild(linha)
+
+        linha.appendChild(codigo)
+        linha.appendChild(nome)
+        linha.appendChild(unidade)
+        linha.appendChild(valor)
+        linha.appendChild(valorLiquido)
+
+        corpoTabela.appendChild(linha)
     }
 
 
 
-function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, status2, dtmovimentacao){
+    function preecheTabela(cdmovimentacao, cdloja_id, user_id, cdtipomovimento_id, status2, dtmovimentacao) {
 
-          var corpoTabela = document.querySelector("tbody")
+        var corpoTabela = document.querySelector("tbody")
 
-           var linha = document.createElement("tr")
-           var codigo = document.createElement("td")
-           var loja = document.createElement("td")
-           var usuario = document.createElement("td")
-           var tipo = document.createElement("td")
-           var status = document.createElement("td")
-           var data = document.createElement("td")
-           var span = document.createElement("span")
-           var editar = document.createElement("a")
-           var excluir = document.createElement("a")
-           var visualizar = document.createElement("a")
-           var ocorrencias = document.createElement("a")
+        var linha = document.createElement("tr")
+        var codigo = document.createElement("td")
+        var loja = document.createElement("td")
+        var usuario = document.createElement("td")
+        var tipo = document.createElement("td")
+        var status = document.createElement("td")
+        var data = document.createElement("td")
+        var span = document.createElement("span")
+        var editar = document.createElement("a")
+        var excluir = document.createElement("a")
+        var visualizar = document.createElement("a")
+        var ocorrencias = document.createElement("a")
 
-           var vlCodigo = document.createTextNode(cdmovimentacao)
-           var vlLoja = document.createTextNode(cdloja_id)
-           var vlUsuario = document.createTextNode(user_id)
-           var vlTipo = document.createTextNode(cdtipomovimento_id)
-           var vlStatus = document.createTextNode(status2)
-           var vlData = document.createTextNode(dtmovimentacao)
-           var lEditar = document.createTextNode('Editar')
-           var lExcluir = document.createTextNode('Excluir')
-           var lVisualizar = document.createTextNode('Visualizar')
-           var lOcorrencias = document.createTextNode('Ocorrencias')
-           var lSpan = document.createTextNode('')
+        var vlCodigo = document.createTextNode(cdmovimentacao)
+        var vlLoja = document.createTextNode(cdloja_id)
+        var vlUsuario = document.createTextNode(user_id)
+        var vlTipo = document.createTextNode(cdtipomovimento_id)
+        var vlStatus = document.createTextNode(status2)
+        var vlData = document.createTextNode(dtmovimentacao)
+        var lEditar = document.createTextNode('Editar')
+        var lExcluir = document.createTextNode('Excluir')
+        var lVisualizar = document.createTextNode('Visualizar')
+        var lOcorrencias = document.createTextNode('Ocorrencias')
+        var lSpan = document.createTextNode('')
 
-           codigo.appendChild(vlCodigo)
-           loja.appendChild(vlLoja)
-           usuario.appendChild(vlUsuario)
-           tipo.appendChild(vlTipo)
-           status.appendChild(vlStatus)
-           data.appendChild(vlData)
-           editar.appendChild(lEditar)
-           editar.appendChild(lSpan)
-           excluir.appendChild(lExcluir)
-           visualizar.appendChild(lVisualizar)
-           ocorrencias.appendChild(lOcorrencias)
-           
-           span.appendChild(lSpan)
+        codigo.appendChild(vlCodigo)
+        loja.appendChild(vlLoja)
+        usuario.appendChild(vlUsuario)
+        tipo.appendChild(vlTipo)
+        status.appendChild(vlStatus)
+        data.appendChild(vlData)
+        editar.appendChild(lEditar)
+        editar.appendChild(lSpan)
+        excluir.appendChild(lExcluir)
+        visualizar.appendChild(lVisualizar)
+        ocorrencias.appendChild(lOcorrencias)
 
-
-           linha.appendChild(codigo)
-           linha.appendChild(loja)
-           linha.appendChild(usuario)
-           linha.appendChild(tipo)
-           linha.appendChild(status)
-           linha.appendChild(data)
-           linha.appendChild(visualizar)
-           linha.appendChild(editar)
-           linha.appendChild(excluir)
-           linha.appendChild(ocorrencias)
-       
-           visualizar.id = cdmovimentacao
-           visualizar.href = '#exampleModal'
-           visualizar.setAttribute('data-toggle', 'modal')
-           visualizar.className = 'badge badge-info text-white teste idVisualizar'
-           visualizar.style = 'padding: 50 px'
-        
-         
-           editar.id = cdmovimentacao
-           editar.href = '#'
-           //editar.setAttribute('data-toggle', 'modal')
-           editar.className = 'badge bg-secondary text-white teste btnEditar'
+        span.appendChild(lSpan)
 
 
-           excluir.id = cdmovimentacao
-           excluir.href = '#'
-           excluir.setAttribute('data-toggle', 'modal')
-           excluir.className = 'badge bg-danger text-white teste btnExcluir'
+        linha.appendChild(codigo)
+        linha.appendChild(loja)
+        linha.appendChild(usuario)
+        linha.appendChild(tipo)
+        linha.appendChild(status)
+        linha.appendChild(data)
+        linha.appendChild(visualizar)
+        linha.appendChild(editar)
+        linha.appendChild(excluir)
+        linha.appendChild(ocorrencias)
 
-           ocorrencias.id = cdmovimentacao
-           ocorrencias.href = '#exampleModal'
-           ocorrencias.setAttribute('data-toggle', 'modal')
-           ocorrencias.className = 'badge bg-warning text-white teste btnOcorrencias'
-
-            corpoTabela.appendChild(linha)
-
-            $('a.teste').css({"margin":"15px 5px 5px 5px"});
-
-            // $('td:nth-child(1),th:nth-child(1)').hide();
-
-}
+        visualizar.id = cdmovimentacao
+        visualizar.href = '#exampleModal'
+        visualizar.setAttribute('data-toggle', 'modal')
+        visualizar.className = 'badge badge-info text-white teste idVisualizar'
+        visualizar.style = 'padding: 50 px'
 
 
+        editar.id = cdmovimentacao
+        editar.href = '#'
+        //editar.setAttribute('data-toggle', 'modal')
+        editar.className = 'badge bg-secondary text-white teste btnEditar'
+
+
+        excluir.id = cdmovimentacao
+        excluir.href = '#'
+        excluir.setAttribute('data-toggle', 'modal')
+        excluir.className = 'badge bg-danger text-white teste btnExcluir'
+
+        ocorrencias.id = cdmovimentacao
+        ocorrencias.href = '#exampleModal'
+        ocorrencias.setAttribute('data-toggle', 'modal')
+        ocorrencias.className = 'badge bg-warning text-white teste btnOcorrencias'
+
+        corpoTabela.appendChild(linha)
+
+        $('a.teste').css({ "margin": "15px 5px 5px 5px" });
+
+        // $('td:nth-child(1),th:nth-child(1)').hide();
+
+    }
 
 
 
-$('#idLoja').click(function(){
-    this.value = ''
-    $('#Lojacomplete').prop('selectedIndex',0)
-})
-$('#idUsuario2').click(function(){
-    this.value = ''
-    $('#datasUsuario').prop('selectedIndex',0)
-})
-$('#idTipoMov').click(function(){
-    this.value = ''
-    $('#datasTpMovimentacao').prop('selectedIndex',0)
-})
-$('#idStatus2').click(function(){
-    this.value = ''
-    $('#dataStatus').prop('selectedIndex',0)
-})
 
 
-// Limpa todas as variaveis do localstorage quando a sair da pagina
-$(document).ready(function(){
-  console.log('Ready disparado');
-  localStorage.clear();
-});
+    $('#idLoja').click(function () {
+        this.value = ''
+        $('#Lojacomplete').prop('selectedIndex', 0)
+    })
+    $('#idUsuario2').click(function () {
+        this.value = ''
+        $('#datasUsuario').prop('selectedIndex', 0)
+    })
+    $('#idTipoMov').click(function () {
+        this.value = ''
+        $('#datasTpMovimentacao').prop('selectedIndex', 0)
+    })
+    $('#idStatus2').click(function () {
+        this.value = ''
+        $('#dataStatus').prop('selectedIndex', 0)
+    })
+
+
+    // Limpa todas as variaveis do localstorage quando a sair da pagina
+    $(document).ready(function () {
+        console.log('Ready disparado');
+        localStorage.clear();
+    });
 
 
 
@@ -523,4 +529,5 @@ $(document).ready(function(){
 
 
 </script>
+
 </html>

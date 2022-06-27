@@ -1,26 +1,28 @@
 {% load static %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Document</title>
-    
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Pannemix - Importação</title>
+
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet/text" href="{% static 'css/styles.css' %}">
 
-    </head>
+</head>
 
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-      <img src="https://i.ibb.co/h7wg3jn/Logo.png">
-<!--    <a class="navbar-brand" href="#">Navbar</a>-->
+    <img src="https://i.ibb.co/h7wg3jn/Logo.png">
+    <!--    <a class="navbar-brand" href="#">Navbar</a>-->
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,85 +37,175 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'filtro_consulta' %}" style="margin: 20px">Controle</a>
         </li> -->
-         <li class="nav-item">
-          <a class="nav-link" href="/accounts/logout/" style="margin: 20px">Sair</a>
+        <li class="nav-item">
+          <a class="btn btn-danger" type="button" href="/accounts/logout/" style="margin: 20px">Sair</a>
         </li>
 
       </ul>
     </div>
   </nav>
-      
-    <div class="container">
-        <br><br>
-        <h5>Importação de dados</h5>
-        <br>
-        <form method="post" enctype="multipart/form-data">
-          {% csrf_token %}
+
+  <div class="container">
+    <br><br>
+
+    <h5>Importação de dados</h5>
+    <br>
+    <form method="post" enctype="multipart/form-data" onsubmit="return validate(this)">
+      {% csrf_token %}
 
 
-          {% if messages %}
-            {% for m in messages %}
-              <div class="alert alert-warning" role="alert">
-              {{ m }}
-             </div>
-            {% endfor %}
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="inputState">Tipo de Importação</label>
+          <select id="opcao" class="custom-select" name="opcao" onclick="opcaoEscolhida(this)" required>
+            <option selected></option>
+            <option id="pedidovenda" value="pedido">PEDIDOS</option>
+            <option id="depara" value="depara">DE PARA</option>
+            <option id="venda" value="vendas">VENDAS</option>
+          </select>
+        </div>
+        <div class="form-group col-md-6">
+          <label>Loja</label>
+
+          {% if result_lojas %}
+          <input list="Lojacomplete" class="form-control" id="inputLoja2" name="loja" required>
+          {% else %}
+          <input list="Lojacomplete" class="form-control" id="inputLoja2" disabled="true">
           {% endif %}
 
-          
-            <i class="fal fa-trash-alt">
-            <div class="form-row">
-                    <label>Arquivo:</label>
-                    <input type="file" class="form-control" id="idArquivo" name="myfile">
-            </div>
-            <br>
-            <button type="submit" id="idExecutar" class="btn btn-primary">Importar</button>
-            <button type="button" id="idVoltar" class="btn btn-info" onclick="location.href='/'">Voltar</button>
-            <br><br>
-        </form>
-        
-    </div>
+          <datalist id="Lojacomplete">
+            {% for result in result_lojas %}
+
+            <option data-value={{ result.cdloja }} value="{{ result.nmloja }}"> </option>
+
+            {% endfor %}
+          </datalist>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="inputData">Data</label>
+          <input type="date" class="form-control" id="inputData" name="data_importacao" required>
+        </div>
+      </div>
+
+
+      <i class="fal fa-trash-alt">
+        <div class="form-row">
+          <label>Arquivo:</label>
+          <input type="file" class="form-control" id="idArquivo" name="myfile">
+        </div>
+        <br>
+
+        <button type="submit" id="idExecutar" class="btn btn-primary" name="btn-importar"
+          value="importar">Importar</button>
+        <a href="{% url 'filtro_consulta' %}" type="button" class="btn btn-info">Voltar</a>
+        <button type="submit" id="desfazer_importacao" name="btn-desfazer" class="btn btn-danger"
+          value="desfazer">Desfazer Importação</button>
+        <br><br>
+
+        {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </form>
 
   </div>
+
 
 </body>
 
 
 <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" data-auto-replace-svg="nest"></script>
- <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
-  <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 
 <script type="text/javascript">
 
-
-var data =  new Date()
-
-document.getElementById("idDataInicial").valueAsDate = data
-document.getElementById("idDataFinal").valueAsDate = data
-
-
-function getCookie(name) {
+  function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = jQuery.trim(cookies[i]);
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
+      }
     }
     return cookieValue;
-}
+  }
 
-        var csrftoken = getCookie('csrftoken');
+  var csrftoken = getCookie('csrftoken');
 
+  function opcaoEscolhida(opc) {
+    var indiceDoSelectEscolhido = opc.selectedIndex;
+    var valorDoElementoEscolhido = opc.options[indiceDoSelectEscolhido];
+    var loja = document.getElementById("inputLoja2")
+    var campo_data = document.getElementById("inputData")
+    
+    if (indiceDoSelectEscolhido == 1) {
+      loja.disabled = true;
+      loja.value = ""
+      campo_data.disabled = true;
+      campo_data.value = ""
+    }
+    else if (indiceDoSelectEscolhido == 2){
+      document.getElementById("inputLoja2").disabled = false;
+      document.getElementById("inputData").disabled = false;
+      $('#Lojacomplete').empty()
+      $.ajax({
+        type: "POST",
+        headers: { 'X-CSRFToken': csrftoken },
+        url: "http://127.0.0.1:8000/filtroDePara",
+        data: { grupo : 0 },
+        success: function (dt) {
+          var obj = JSON.parse(dt)
+          obj.forEach(function (o) {
+            $('#Lojacomplete').append('<option data-value="' + o.nmloja + '" value="' + o.nmloja + '"></option>')
+          });
+        }
+      });
+    }
+    else if(indiceDoSelectEscolhido == 3){
+      document.getElementById("inputLoja2").disabled = false;
+      document.getElementById("inputData").disabled = false;
+      $('#Lojacomplete').empty()
+      $.ajax({
+        type: "POST",
+        headers: { 'X-CSRFToken': csrftoken },
+        url: "http://127.0.0.1:8000/filtroVenda",
+        data: { grupo : 0 },
+        success: function (dt) {
+          
+          var obj = JSON.parse(dt)
+          obj.forEach(function (o) {
+            $('#Lojacomplete').append('<option data-value="' + o.nmloja + '" value="' + o.nmloja + '"></option>')
+          });
+        }
+      });
+    }
+    else {
+      document.getElementById("inputLoja2").disabled = false;
+      document.getElementById("inputData").disabled = false;
+    }
+  }
+  function validate() {
+    var resultado = confirm("Tem certeza que deseja realizar operação ?")
+    if (resultado == true) {
+      return true
+    } else {
+      return false;
+    }
+  }
 
-
-  
 
 </script>
+
 </html>

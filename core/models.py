@@ -1,10 +1,4 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
+from pyexpat import model
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.expressions import OrderBy
@@ -105,9 +99,6 @@ class Acesso(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.user.username, self.cdloja.nmloja)
 
-
-
-
 class Produto(models.Model):
     cdproduto = models.AutoField(db_column='cdProduto', primary_key=True)  # Field name made lowercase.
     idproduto = models.IntegerField(db_column='idProduto', blank=True, null=True)  # Field name made lowercase.
@@ -166,3 +157,14 @@ class Ocorrencia(models.Model):
 
     def __str__(self):
          return '{}  -  {}  -  {}  -  {}'.format(self.cdMovimentacao.cdmovimentacao, self.user.username, self.dtOcorrencia, self.dsOcorrencia )
+
+
+class importa_de_para(models.Model):
+    dtimportacao = models.DateField(auto_now_add=False)
+    cdloja = models.IntegerField()
+    nmprodutocliente = models.CharField(max_length=255)
+    cdproduto = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = "importa_de_para"

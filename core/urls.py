@@ -1,11 +1,10 @@
 from django.urls import path
-from .views import excluirItem, excluirMovi, getAll, getEditar, importData, index, filtroConsulta, filtroMovimento, movimento, finalizarMov, acompanhamentoMov,filtroSubgrupo
-
+from .views import excluirItem, excluirMovi, getAll, getEditar, importData, index, filtroConsulta, filtroMovimento, movimento, finalizarMov, acompanhamentoMov,filtroSubgrupo, filtroDePara, filtroVenda
 
 urlpatterns = [
     path('insert', index, name="index"),
     path('', filtroConsulta, name="filtro_consulta"),
-    path('importData', importData),
+    path('importData', importData, name="importacao"),
     path('movimento', movimento),
     path('filtroMovimento', filtroMovimento, name="filtro_teste"),
     path('fimMovimento', finalizarMov),
@@ -15,5 +14,6 @@ urlpatterns = [
     path('getEditar', getEditar), # Pega os dados do cabeçalho da movimentação para inclusão ou alteração dos dados
     path('excluirMovi', excluirMovi), # Ecluir os itens e o cabeçalho da movimentação 
     path('excluirItem', excluirItem), # Ecluir o item selecionado 
-
+    path('filtroDePara', filtroDePara),
+    path('filtroVenda', filtroVenda),
 ]
