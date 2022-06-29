@@ -649,7 +649,7 @@ def importaVenda(request):
                                                         user_id = usuario_logado,
                                                         cdloja_id=cd_loja,
                                                         dtmovimentacao=data_atual,
-                                                        status_id=3,
+                                                        status_id=4,
                                                         obs='Importacao').pk
 
             base_item = Itemmovimentado(
@@ -660,8 +660,6 @@ def importaVenda(request):
                 cdunidade_id=cd_uni,
             )
             base_item.save()
-            print(data_atual, id_mov, cd_produto, valor, cdunidade_produto)
-
         messages.success(request, "Importação de vendas realizada com sucesso.") 
 
 
@@ -720,7 +718,7 @@ def importaPedido(request):
                                                                 user_id = User.objects.filter(username=request.user).values('id'),
                                                                 cdloja_id = cliente,
                                                                 dtmovimentacao = data,
-                                                                status_id = 3).pk
+                                                                status_id = 4).pk
 
 
                     for j in imported_data:
@@ -773,7 +771,7 @@ def desfazerImportacao(request):
                     dtmovimentacao__lt=new_date,
                     cdloja=cd_loja,
                     cdtipomovimento_id=5,
-                    obs = 'Importacao').values('cdmovimentacao')
+                    status_id = 4).values('cdmovimentacao')
                 
                 if base:
                     Itemmovimentado.objects.filter(cdmovimentacao__in=base).delete()
