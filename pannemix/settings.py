@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import dj_database_url
+from django.contrib.messages import constants as messages
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -81,19 +82,19 @@ WSGI_APPLICATION = 'pannemix.wsgi.application'
 
 
 # DATABASES = {
-# 'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': os.environ.get('DB_NAME', 'Producao'),
-#         'USER': os.environ.get('DB_USER', 'postgres'),
-#         'PASSWORD': os.environ.get('DB_PASS', 'root'),
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
+#  'default': {
+#          'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#          'NAME': os.environ.get('DB_NAME', 'Producao'),
+#          'USER': os.environ.get('DB_USER', 'postgres'),
+#          'PASSWORD': os.environ.get('DB_PASS', 'root'),
+#          'HOST': 'localhost',
+#          'PORT': '5432',
+#      }
 # }
 
 
 DATABASES = {
-    "default": dj_database_url.config(default=f"sqlite:///{BASE_DIR}/db.sqlite3")
+   "default": dj_database_url.config(default=f"sqlite:///{BASE_DIR}/db.sqlite3")
 }
 
 
@@ -122,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Fortaleza'
 
 USE_I18N = True
 
@@ -143,3 +144,13 @@ APPEND_SLASH=False
 LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MESSAGE_TAGS = {
+        messages.DEBUG: 'alert-secondary',
+        messages.INFO: 'alert-info',
+        messages.SUCCESS: 'alert-success',
+        messages.WARNING: 'alert-warning',
+        messages.ERROR: 'alert-danger',
+ }

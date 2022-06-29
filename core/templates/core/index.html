@@ -8,9 +8,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet/text" href="{% static 'css/styles.css' %}">
-
+  <title>Pannemix</title>
 
 </head>
 
@@ -20,8 +21,8 @@
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-      <img src="https://i.ibb.co/h7wg3jn/Logo.png">
-<!--    <a class="navbar-brand" href="#">Navbar</a>-->
+    <img src="https://i.ibb.co/h7wg3jn/Logo.png">
+    <!--    <a class="navbar-brand" href="#">Navbar</a>-->
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,9 +37,9 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'filtro_consulta' %}" style="margin: 20px">Controle</a>
         </li> -->
-    <li class="nav-item">
-      <a class="nav-link" href="/accounts/logout/" style="margin: 20px">Sair</a>
-    </li>
+        <li class="nav-item">
+          <a class="btn btn-danger" type="button"  href="/accounts/logout/" style="margin: 20px">Sair</a>
+        </li>
       </ul>
     </div>
   </nav>
@@ -49,44 +50,45 @@
     <div class="container">
 
       <br><br>
-        <h5>Movimentação de Produtos</h5>
+      <h5>Movimentação de Produtos</h5>
       <br>
 
       <p>Tipo de Movimentação:</p>
       <div>
         {% for tp_mv in tipo_movimento %}
-         <input style="margin:5px;" type="radio" class="rdButton" id="inputTipoM" name="inpTpMovi" value="{{tp_mv.nmtipomovimento}}">
+        <input style="margin:5px;" type="radio" class="rdButton" id="inputTipoM" name="inpTpMovi"
+          value="{{tp_mv.nmtipomovimento}}">
         <label for="inputTipoM">{{tp_mv.nmtipomovimento}}</label>
         {% endfor %}
       </div>
 
-       <div>
+      <div>
         <div class="row">
 
           <div class="col">
-          </br>
+            </br>
             <label for="idData">Data</label>
             <input type="date" class="form-control" id="idData">
-        </div>
+          </div>
 
 
           <div class="col">
-          </br>
-          <label for="inputLoja2">Lojas</label>
+            </br>
+            <label for="inputLoja2">Lojas</label>
 
-              {% if result_lojas %}
-                    <input list="Lojacomplete" class="form-control" id="inputLoja2" >
-              {% else %}
-                    <input list="Lojacomplete" class="form-control" id="inputLoja2" disabled="true">
-              {% endif %}
+            {% if result_lojas %}
+            <input list="Lojacomplete" class="form-control" id="inputLoja2">
+            {% else %}
+            <input list="Lojacomplete" class="form-control" id="inputLoja2" disabled="true">
+            {% endif %}
 
-              <datalist id="Lojacomplete" >
-                  {% for result in result_lojas %}
+            <datalist id="Lojacomplete">
+              {% for result in result_lojas %}
 
-                      <option data-value={{ result.cdloja }} value="{{ result.nmloja }}"> </option>
+              <option data-value={{ result.cdloja }} value="{{ result.nmloja }}"> </option>
 
-                  {% endfor %}
-              </datalist>
+              {% endfor %}
+            </datalist>
           </div>
 
           <div class="col"></div>
@@ -100,33 +102,36 @@
 
           <div class="col">
             <label for="inputGrupo">Grupo</label>
-<!--            {% render_field gp_form.nmgrupo class="custom-select" placeholder="Informe o grupo" %}-->
-            <input list="GrupoComplete" class="form-control" id="inputGrupo" name="inpGrupo" placeholder="Escolha um grupo...">
-          <datalist id="GrupoComplete">
+            <!--            {% render_field gp_form.nmgrupo class="custom-select" placeholder="Informe o grupo" %}-->
+            <input list="GrupoComplete" class="form-control" id="inputGrupo" name="inpGrupo"
+              placeholder="Escolha um grupo...">
+            <datalist id="GrupoComplete">
               {% for result in result_grupos %}
-                  <option  data-value="{{ result.cdgrupo }}" value="{{ result.nmgrupo }}"></option>
+              <option data-value="{{ result.cdgrupo }}" value="{{ result.nmgrupo }}"></option>
               {% endfor %}
-          </datalist>
+            </datalist>
           </div>
 
           <div class="col">
             <label for="inputSubGrupo">SubGrupo</label>
-<!--            {% render_field sbgp_form.nmsubgrupo class="custom-select" placeholder="Informe o SubGrupo" %}-->
-            <input list="SubgrupoComplete" class="form-control" id="inputSubGrupo" name="inpSubGrupo" placeholder="Escolha um subgrupo...">
-          <datalist id="SubgrupoComplete">
+            <!--            {% render_field sbgp_form.nmsubgrupo class="custom-select" placeholder="Informe o SubGrupo" %}-->
+            <input list="SubgrupoComplete" class="form-control" id="inputSubGrupo" name="inpSubGrupo"
+              placeholder="Escolha um subgrupo...">
+            <datalist id="SubgrupoComplete">
 
-          </datalist>
+            </datalist>
           </div>
 
           <div class="col">
             <label for="inputProduto">Produto</label>
-<!--            {% render_field sbgp_form.nmsubgrupo class="custom-select" placeholder="Informe o SubGrupo" %}-->
-            <input list="ProdutoComplete" class="form-control" id="inputProduto" name="inpProduto" placeholder="Escolha um produto...">
-          <datalist id="ProdutoComplete">
-             {% for result in result_produtos %}-->
-                 <option data-value="{{ result.cdproduto }}" value="{{ result.nmproduto }}"></option>
-             {% endfor %}
-          </datalist>
+            <!--            {% render_field sbgp_form.nmsubgrupo class="custom-select" placeholder="Informe o SubGrupo" %}-->
+            <input list="ProdutoComplete" class="form-control" id="inputProduto" name="inpProduto"
+              placeholder="Escolha um produto...">
+            <datalist id="ProdutoComplete">
+              {% for result in result_produtos %}-->
+              <option data-value="{{ result.cdproduto }}" value="{{ result.nmproduto }}"></option>
+              {% endfor %}
+            </datalist>
           </div>
 
 
@@ -136,21 +141,21 @@
 
       </div>
       <hr>
-<!--      <button type="submit" class="btn btn-primary" id="consultar">Consultar</button>-->
+      <!--      <button type="submit" class="btn btn-primary" id="consultar">Consultar</button>-->
 
 
-<!--    </div>-->
+      <!--    </div>-->
   </form>
-<!--      <button class="btn btn-primary" id="consultar">Consultar</button>-->
-      <a href="#" id="consultar" class="badge badge-primary" style="font-size: 16px" >Consultar</a>
-      <a href="#exampleModal" class="badge badge-success " style="font-size: 16px" data-toggle="modal">Visualizar</a>
+  <!--      <button class="btn btn-primary" id="consultar">Consultar</button>-->
+  <a href="#" id="consultar" class="badge badge-primary" style="font-size: 16px">Consultar</a>
+  <a href="#exampleModal" class="badge badge-success " style="font-size: 16px" data-toggle="modal">Visualizar</a>
   <br><br>
 
   <form>
     {% csrf_token %}
 
     <!-- Menssagem de erro caso já tenha uma movimentação para essa loja com a mesma data -->
-    <div class="alertErro alert-danger" > Lançamento já registrado!!! </div>
+    <div class="alertErro alert-danger"> Lançamento já registrado!!! </div>
 
     <h2>Lista de produtos</h2>
     <table class="table table-striped" id="tbInsert">
@@ -169,8 +174,8 @@
       </tbody>
     </table>
     <div>
-<!--      <button type="submit" id="btn-finalizar" class="btn btn-danger float-right"> Finalizar </button>-->
-<!--      <button type="submit" id="btn-inserir" class="btn btn-warning float-right"> Inserir </button>-->
+      <!--      <button type="submit" id="btn-finalizar" class="btn btn-danger float-right"> Finalizar </button>-->
+      <!--      <button type="submit" id="btn-inserir" class="btn btn-warning float-right"> Inserir </button>-->
       <a href="#" id="btnInserir" class="badge bg-warning text-dark" style="font-size: 16px">Inserir</a>
       <a href="#" id="btnFinalizar" class="badge bg-danger text-white" style="font-size: 16px">Finalizar</a>
       <a href="/" id="btnVoltar" class="badge badge-info text-white" style="font-size: 16px">Voltar</a>
@@ -185,665 +190,662 @@
   </form>
 
 
-                       <!-- Button trigger modal -->
-<!--            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">-->
-<!--              Launch demo modal-->
-<!--            </button>-->
+  <!-- Button trigger modal -->
+  <!--            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">-->
+  <!--              Launch demo modal-->
+  <!--            </button>-->
 
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="text-center" id="exampleModalLabel">Produtos cadastrados!!!</h5>
-                  </div>
-                  <div class="modal-body">
-                        <table class="table table-striped" id="tabelaVisualizar">
-                          <thead>
-                            <tr>
-                              <th scope="col">Codigo</th>
-                              <th scope="col">Produto</th>
-                              <th scope="col">Uni</th>
-                              <th scope="col">vlBruto</th>
-                              <th scope="col">vlLíquido</th>
-                              <th scope="col">Ação</th>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="text-center" id="exampleModalLabel">Produtos cadastrados!!!</h5>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped" id="tabelaVisualizar">
+            <thead>
+              <tr>
+                <th scope="col">Codigo</th>
+                <th scope="col">Produto</th>
+                <th scope="col">Uni</th>
+                <th scope="col">vlBruto</th>
+                <th scope="col">vlLíquido</th>
+                <th scope="col">Ação</th>
 
-                            </tr>
-                          </thead>
-                          <tbody class="showProdutos">
+              </tr>
+            </thead>
+            <tbody class="showProdutos">
 
-                          </tbody>
-                        </table>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
   <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
   <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
 
 
 
 </body>
 <script>
 
-var data =  new Date()
+  var data = new Date()
 
-document.getElementById("idData").valueAsDate = data
+  document.getElementById("idData").valueAsDate = data
 
-$('.alertErro').hide()
+  $('.alertErro').hide()
 
- $('#inputLoja2').click(function(){
+  $('#inputLoja2').click(function () {
     this.value = ''
-    $('#Lojacomplete').prop('selectedIndex',0)
-})
+    $('#Lojacomplete').prop('selectedIndex', 0)
+  })
 
-$('#inputGrupo').click(function(){
+  $('#inputGrupo').click(function () {
     this.value = ''
-    $('#GrupoComplete').prop('selectedIndex',0)
+    $('#GrupoComplete').prop('selectedIndex', 0)
 
-})
+  })
 
-$('#inputProduto').click(function(){
+  $('#inputProduto').click(function () {
     this.value = ''
-    $('#ProdutoComplete').prop('selectedIndex',0)  
+    $('#ProdutoComplete').prop('selectedIndex', 0)
 
-})
+  })
 
-$('#inputProduto').focusin(function(){
-  this.value = ''
-  $('#ProdutoComplete').prop('selectedIndex',0)
-})
+  $('#inputProduto').focusin(function () {
+    this.value = ''
+    $('#ProdutoComplete').prop('selectedIndex', 0)
+  })
 
 
-$('#inputProduto').focusout(function(){
-    if(this.value != ''){
+  $('#inputProduto').focusout(function () {
+    if (this.value != '') {
       consultaProduto()
     }
 
-})
+  })
 
 
 
-$('#inputGrupo').blur(function(){
+  $('#inputGrupo').blur(function () {
 
     if (this.value != '') {
-        var valor = $('#inputGrupo').val()
-        $('#SubgrupoComplete').empty()
-         $.ajax({
-                type:"POST",
-                headers: {'X-CSRFToken': csrftoken},
-                url: "http://ezbi-pannemix.herokuapp.com/filtroSubgrupo",
-                data: {grupo: valor},
-                success: function(dt){
-                    var obj = JSON.parse(dt)
-                    obj.forEach(function(o, index){
-                          $('#SubgrupoComplete').append('<option data-value="'+o.cdsubgrupo+'" value="'+o.nmsubgrupo+'"></option>' )
-                     });
-                }
-            });
-         }
-})
+      var valor = $('#inputGrupo').val()
+      $('#SubgrupoComplete').empty()
+      $.ajax({
+        type: "POST",
+        headers: { 'X-CSRFToken': csrftoken },
+        url: "https://ezbi-pannemix.herokuapp.com/filtroSubgrupo",
+        data: { grupo : valor },
+        success: function (dt) {
+          var obj = JSON.parse(dt)
+          obj.forEach(function (o) {
+            $('#SubgrupoComplete').append('<option data-value="' + o.cdsubgrupo + '" value="' + o.nmsubgrupo + '"></option>')
+          });
+        }
+      });
+    }
+  })
 
-$('#inputSubGrupo').click(function(){
+  $('#inputSubGrupo').click(function () {
     this.value = ''
-    $('#SubGrupoComplete').prop('selectedIndex',0)
+    $('#SubGrupoComplete').prop('selectedIndex', 0)
 
-    if ($('#inputGrupo').val() == ''){
-        alert('Selecione um grupo!!!')
+    if ($('#inputGrupo').val() == '') {
+      alert('Selecione um grupo!!!')
     }
 
-})
+  })
 
-// <!--Modal-->
-
-
+  // <!--Modal-->
 
 
-function getCookie(name) {
+
+
+  function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = jQuery.trim(cookies[i]);
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
+      }
     }
     return cookieValue;
-}
+  }
 
-        var csrftoken = getCookie('csrftoken');
+  var csrftoken = getCookie('csrftoken');
 
-// <!-- Consulta os produtos para preenchimento dos valores de acordo com o filtro-->
+  // <!-- Consulta os produtos para preenchimento dos valores de acordo com o filtro-->
 
-    $("#consultar").click(function(){
+  $("#consultar").click(function () {
 
-      if ( $("#inputGrupo").val() || $("#inputSubGrupo").val() || $("#inputProduto").val()){
-            consultaProduto()
+    if ($("#inputGrupo").val() || $("#inputSubGrupo").val() || $("#inputProduto").val()) {
+      consultaProduto()
 
-            }else{
-              alert('Escolha um grupo, subgrupo ou produto!!!')
-            }  
-    });
+    } else {
+      alert('Escolha um grupo, subgrupo ou produto!!!')
+    }
+  });
 
 
-    function radioChecked(){
+  function radioChecked() {
 
-      var movimento = null
-              var radio = document.getElementsByName('inpTpMovi')
+    var movimento = null
+    var radio = document.getElementsByName('inpTpMovi')
 
-              for(var i = 0; i <= radio.length -1; i++){
-                if ( radio[i].checked == true ){
-                    movimento = radio[i].value
-                }
-              }    
-
-        return movimento 
-              
+    for (var i = 0; i <= radio.length - 1; i++) {
+      if (radio[i].checked == true) {
+        movimento = radio[i].value
+      }
     }
 
+    return movimento
+
+  }
 
 
-    function consultaProduto(){
 
-          var movimento = radioChecked()
+  function consultaProduto() {
 
-          $('.alertErro').hide()
-         
-          var idloja = $("#inputLoja2").val();
-          var loja = $('#LojaComplete [value="' + idloja + '"]').data('value')
+    var movimento = radioChecked()
 
-          var idgrupo = $("#inputGrupo").val();
-          var grupo = $('#GrupoComplete [value="' + idgrupo + '"]').data('value')
+    $('.alertErro').hide()
 
-          var idsubgrupo = $("#inputSubGrupo").val();
-          var subgrupo = $('#SubgrupoComplete [value="' + idsubgrupo + '"]').data('value')
-         
+    var idloja = $("#inputLoja2").val();
+    var loja = $('#LojaComplete [value="' + idloja + '"]').data('value')
 
-          var idProduto = $("#inputProduto").val();
-          var produto = $('#ProdutoComplete [value="' + idProduto + '"]').data('value')
-          
-          const varStorage = localStorage.getItem("idMovPannemix")
-            
+    var idgrupo = $("#inputGrupo").val();
+    var grupo = $('#GrupoComplete [value="' + idgrupo + '"]').data('value')
 
-          if (movimento){
-              if (varStorage) {
+    var idsubgrupo = $("#inputSubGrupo").val();
+    var subgrupo = $('#SubgrupoComplete [value="' + idsubgrupo + '"]').data('value')
 
-                $.ajax({
-                    type:"POST",
-                    headers: {'X-CSRFToken': csrftoken},
-                    url: "http://ezbi-pannemix.herokuapp.com/filtroMovimento",
-                    data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto, idMov: varStorage},
-                    success: function(dt){
 
-                        var obj = JSON.parse(dt)
-                      
-                        $(".lpTbody tr").remove()
-                        obj.forEach(function(o, index){
-                              preecheTabela(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido, o.percPerda,  'insert')
+    var idProduto = $("#inputProduto").val();
+    var produto = $('#ProdutoComplete [value="' + idProduto + '"]').data('value')
 
-                        });
-                    }
-                });
+    const varStorage = localStorage.getItem("idMovPannemix")
 
-              }else{
 
-                $.ajax({
-                    type:"POST",
-                    headers: {'X-CSRFToken': csrftoken},
-                    url: "http://ezbi-pannemix.herokuapp.com/filtroMovimento",
-                    data: {movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto, idMov: 0},
-                    success: function(dt){
+    if (movimento) {
+      if (varStorage) {
 
-                        var obj = JSON.parse(dt)
-                      
-                        $(".lpTbody tr").remove()
-                        obj.forEach(function(o, index){
-                              preecheTabela(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido, o.percPerda,   'insert')
+        $.ajax({
+          type: "POST",
+          headers: { 'X-CSRFToken': csrftoken },
+          url: "https://ezbi-pannemix.herokuapp.com/filtroMovimento",
+          data: { movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto, idMov: varStorage },
+          success: function (dt) {
 
-                        });
-                    }
-                });
-              }
-         
-          }else{
-            alert('Escolha um tipo de movimentação!!!')
+            var obj = JSON.parse(dt)
+
+            $(".lpTbody tr").remove()
+            obj.forEach(function (o, index) {
+              preecheTabela(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido, o.percPerda, 'insert')
+
+            });
           }
-    }
-
-
- $('td:nth-child(1), th:nth-child(1)').hide();
-
-function preecheTabela(cd, nm, uni, vl, vlLiq, percPerda, tipo){
-
-        if (tipo == 'insert'){
-
-            var corpoTabela = document.querySelector("tbody.lpTbody")
-           var linha = document.createElement("tr")
-           linha.className = 'trInputs'
-           var codigo = document.createElement("td")
-           var nome = document.createElement("td")
-           var unidade = document.createElement("td")
-           var input = document.createElement("input")
-           input.type="number"
-           input.id="vlPrd"
-           input.className = "inputValores"
-           var input2 = document.createElement("input")
-           input2.type="number"
-           input2.id="vlPrdLiq"
-           input2.className = "inputValores"
-
-           var vlCodigo = document.createTextNode(cd)
-           var vlNome = document.createTextNode(nm)
-           var vlUnidade = document.createTextNode(uni)
-           var vlBruto = document.createTextNode(vl)
-
-           var liquido = null
-           if (vlLiq != null){
-              Liquido = vlLiq
-           }
-           var vlLiquido = document.createTextNode(vlLiq)
-
-           codigo.appendChild(vlCodigo)
-           nome.appendChild(vlNome)
-           unidade.appendChild(vlUnidade)
-           input.appendChild(vlBruto)
-           input.value = vl
-           
-           
-           linha.appendChild(codigo)
-           linha.appendChild(nome)
-           linha.appendChild(unidade)
-           linha.appendChild(input)
-           
-
-
-           var movimentoAtual = $("input[name='inpTpMovi']:checked").val()
-          if ( movimentoAtual == "INVENTARIO" && (percPerda != null  || percPerda > 0) ){
-           
-          linha.appendChild(input2)
-          input2.value = vlLiq
-           $('#tbInsert td:nth-child(5)').show()
-
-          }else{
-
-           $('#tbInsert td:nth-child(5)').hide()
-           
-          }
-
-          corpoTabela.appendChild(linha)
-
-          // if (vl == null) {
-          //   $('#vlPrd').val()
-          // }else{
-          //   $('#vlPrd').val(vl)
-          // }
-
-
-
-          // if (vlLiq == null) {
-          //   $('#vlPrdLiq').val()
-          // }else{
-          //   $('#vlPrdLiq').val(vlLiq)
-          // }
-
-          $('#tbInsert td:nth-child(1),th:nth-child(1)').hide()
-          $('input.inputValores').css({"margin":"15px 5px 5px 5px", "width":"100px"}) 
-
-        }else{
-
-           var corpoTabela = document.querySelector("tbody.showProdutos")
-           var linha = document.createElement("tr")
-
-
-           var codigo = document.createElement("td")
-           var nome = document.createElement("td")
-           var unidade = document.createElement("td")
-           var valor = document.createElement("td")
-           var valorLiq = document.createElement("td")
-           var excluirItem = document.createElement("a")
-
-           var vlCodigo = document.createTextNode(cd)
-           var vlNome = document.createTextNode(nm)
-           var vlUnidade = document.createTextNode(uni)
-           var vlValor = document.createTextNode(vl)
-
-           var liquido = 0
-           if (vlLiq != null){
-              liquido = vlLiq
-           }
-          
-           var vlLiquido = document.createTextNode(liquido)
-           var vlExcluirItem = document.createTextNode('Excluir')
-
-           codigo.appendChild(vlCodigo)
-           nome.appendChild(vlNome)
-           unidade.appendChild(vlUnidade)
-           valor.appendChild(vlValor)
-           valorLiq.appendChild(vlLiquido)
-           excluirItem.appendChild(vlExcluirItem)
-
-           linha.appendChild(codigo)
-           linha.appendChild(nome)
-           linha.appendChild(unidade)
-           linha.appendChild(valor)
-           linha.appendChild(valorLiq)
-           linha.appendChild(excluirItem)
-
-           corpoTabela.appendChild(linha)
-           
-           excluirItem.id = cd
-           excluirItem.className = 'badge bg-danger text-white teste btnExcluirItem'
-           excluirItem.href = '#'
-            $('a.teste').css({"margin":"15px 5px 5px 5px"})       
-            
-            $('#tabelaVisualizar td:nth-child(1),th:nth-child(1)').hide()
-
-
-        }
-
-        
-}
-
-
-
-function excluirItem(){
-        var idItem = null
-        var a = document.querySelectorAll('.btnExcluirItem');
-        
-
-        a.forEach((el) => {
-            el.addEventListener('click', meuID);
         });
 
-        function meuID(e) {
-            idItem = e.currentTarget.id
-            const varStorage = localStorage.getItem("idMovPannemix")
-            
+      } else {
 
-            if (varStorage) {
-            $.ajax({
-                            type:"POST",
-                            headers: {'X-CSRFToken': csrftoken},
-                            url: "http://ezbi-pannemix.herokuapp.com/excluirItem",
-                            data: {idMov: varStorage, idItem: idItem },
-                            success: function(dt){
+        $.ajax({
+          type: "POST",
+          headers: { 'X-CSRFToken': csrftoken },
+          url: "https://ezbi-pannemix.herokuapp.com/filtroMovimento",
+          data: { movimento: movimento, loja: loja, grupo: grupo, subgrupo: subgrupo, produto: produto, idMov: 0 },
+          success: function (dt) {
 
-                              var obj = JSON.parse(dt)
-                              $(".showProdutos tr").remove()
-                              obj.forEach(function(o, index){
-                                    preecheTabela(o.cdItem, o.nmProduto, o.unidade, o.valor, o.valorLiquido, 0, 'show')
+            var obj = JSON.parse(dt)
 
-                              });
+            $(".lpTbody tr").remove()
+            obj.forEach(function (o, index) {
+              preecheTabela(o.cdProduto, o.nmProduto, o.unidade, o.valor, o.valorLiquido, o.percPerda, 'insert')
 
-                              excluirItem()
-                            }
-                    });
-                }
-        }
+            });
+          }
+        });
+      }
+
+    } else {
+      alert('Escolha um tipo de movimentação!!!')
+    }
+  }
+
+
+  $('td:nth-child(1), th:nth-child(1)').hide();
+
+  function preecheTabela(cd, nm, uni, vl, vlLiq, percPerda, tipo) {
+
+    if (tipo == 'insert') {
+
+      var corpoTabela = document.querySelector("tbody.lpTbody")
+      var linha = document.createElement("tr")
+      linha.className = 'trInputs'
+      var codigo = document.createElement("td")
+      var nome = document.createElement("td")
+      var unidade = document.createElement("td")
+      var input = document.createElement("input")
+      input.type = "number"
+      input.id = "vlPrd"
+      input.className = "inputValores"
+      var input2 = document.createElement("input")
+      input2.type = "number"
+      input2.id = "vlPrdLiq"
+      input2.className = "inputValores"
+
+      var vlCodigo = document.createTextNode(cd)
+      var vlNome = document.createTextNode(nm)
+      var vlUnidade = document.createTextNode(uni)
+      var vlBruto = document.createTextNode(vl)
+
+      var liquido = null
+      if (vlLiq != null) {
+        Liquido = vlLiq
+      }
+      var vlLiquido = document.createTextNode(vlLiq)
+
+      codigo.appendChild(vlCodigo)
+      nome.appendChild(vlNome)
+      unidade.appendChild(vlUnidade)
+      input.appendChild(vlBruto)
+      input.value = vl
+
+
+      linha.appendChild(codigo)
+      linha.appendChild(nome)
+      linha.appendChild(unidade)
+      linha.appendChild(input)
+
+
+
+      var movimentoAtual = $("input[name='inpTpMovi']:checked").val()
+      if (movimentoAtual == "INVENTARIO" && (percPerda != null || percPerda > 0)) {
+
+        linha.appendChild(input2)
+        input2.value = vlLiq
+        $('#tbInsert td:nth-child(5)').show()
+
+      } else {
+
+        $('#tbInsert td:nth-child(5)').hide()
+
+      }
+
+      corpoTabela.appendChild(linha)
+
+      // if (vl == null) {
+      //   $('#vlPrd').val()
+      // }else{
+      //   $('#vlPrd').val(vl)
+      // }
+
+
+
+      // if (vlLiq == null) {
+      //   $('#vlPrdLiq').val()
+      // }else{
+      //   $('#vlPrdLiq').val(vlLiq)
+      // }
+
+      $('#tbInsert td:nth-child(1),th:nth-child(1)').hide()
+      $('input.inputValores').css({ "margin": "15px 5px 5px 5px", "width": "100px" })
+
+    } else {
+
+      var corpoTabela = document.querySelector("tbody.showProdutos")
+      var linha = document.createElement("tr")
+
+
+      var codigo = document.createElement("td")
+      var nome = document.createElement("td")
+      var unidade = document.createElement("td")
+      var valor = document.createElement("td")
+      var valorLiq = document.createElement("td")
+      var excluirItem = document.createElement("a")
+
+      var vlCodigo = document.createTextNode(cd)
+      var vlNome = document.createTextNode(nm)
+      var vlUnidade = document.createTextNode(uni)
+      var vlValor = document.createTextNode(vl)
+
+      var liquido = 0
+      if (vlLiq != null) {
+        liquido = vlLiq
+      }
+
+      var vlLiquido = document.createTextNode(liquido)
+      var vlExcluirItem = document.createTextNode('Excluir')
+
+      codigo.appendChild(vlCodigo)
+      nome.appendChild(vlNome)
+      unidade.appendChild(vlUnidade)
+      valor.appendChild(vlValor)
+      valorLiq.appendChild(vlLiquido)
+      excluirItem.appendChild(vlExcluirItem)
+
+      linha.appendChild(codigo)
+      linha.appendChild(nome)
+      linha.appendChild(unidade)
+      linha.appendChild(valor)
+      linha.appendChild(valorLiq)
+      linha.appendChild(excluirItem)
+
+      corpoTabela.appendChild(linha)
+
+      excluirItem.id = cd
+      excluirItem.className = 'badge bg-danger text-white teste btnExcluirItem'
+      excluirItem.href = '#'
+      $('a.teste').css({ "margin": "15px 5px 5px 5px" })
+
+      $('#tabelaVisualizar td:nth-child(1),th:nth-child(1)').hide()
+
+
     }
 
 
-$("#btnInserir").click(function(){
+  }
+
+
+
+  function excluirItem() {
+    var idItem = null
+    var a = document.querySelectorAll('.btnExcluirItem');
+
+
+    a.forEach((el) => {
+      el.addEventListener('click', meuID);
+    });
+
+    function meuID(e) {
+      idItem = e.currentTarget.id
+      const varStorage = localStorage.getItem("idMovPannemix")
+
+
+      if (varStorage) {
+        $.ajax({
+          type: "POST",
+          headers: { 'X-CSRFToken': csrftoken },
+          url: "https://ezbi-pannemix.herokuapp.com/excluirItem",
+          data: { idMov: varStorage, idItem: idItem },
+          success: function (dt) {
+
+            var obj = JSON.parse(dt)
+            $(".showProdutos tr").remove()
+            obj.forEach(function (o, index) {
+              preecheTabela(o.cdItem, o.nmProduto, o.unidade, o.valor, o.valorLiquido, 0, 'show')
+
+            });
+
+            excluirItem()
+          }
+        });
+      }
+    }
+  }
+
+
+  $("#btnInserir").click(function () {
 
 
     var movimento = radioChecked()
 
-    if(movimento) {
+    if (movimento) {
 
-       produtos = lerTabela()
-       cabecalho = lerCabecalho()
+      produtos = lerTabela()
+      cabecalho = lerCabecalho()
 
-        const varStorage = localStorage.getItem("idMovPannemix")
-        if ( $('#inputLoja2').val() != "") {
+      const varStorage = localStorage.getItem("idMovPannemix")
+      console.log(varStorage)
+      if ($('#inputLoja2').val() != "") {
 
-              if (varStorage) {
-                  $.ajax({
+        if (varStorage) {
+          $.ajax({
 
-                          type:"POST",
-                          headers: {'X-CSRFToken': csrftoken},
-                          url: "http://ezbi-pannemix.herokuapp.com/movimento",
-                          data: {cab: cabecalho, prod: produtos, flag: varStorage},
-                          success: function(dt){
+            type: "POST",
+            headers: { 'X-CSRFToken': csrftoken },
+            url: "https://ezbi-pannemix.herokuapp.com/movimento",
+            data: { cab: cabecalho, prod: produtos, flag: varStorage },
+            success: function (dt) {
 
-                            console.log('teste de retorno mensagem', dt)
-                            if (dt != 'Error'){
-                                var obj = JSON.parse(dt)
+              console.log('teste de retorno mensagem', dt)
+              if (dt != 'Error') {
+                var obj = JSON.parse(dt)
 
-                                $(".showProdutos tr").remove()
-                                obj.forEach(function(o, index){
-                                      preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0,  'show')
+                $(".showProdutos tr").remove()
+                obj.forEach(function (o, index) {
+                  preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0, 'show')
 
-                                 });
+                });
 
-                                 excluirItem()
-
-                            }else{
-                              $('.alertErro').show()
-                            }
-
-                          }
-                    });
+                excluirItem()
 
               } else {
-                  $.ajax({
-                          type:"POST",
-                          headers: {'X-CSRFToken': csrftoken},
-                          url: "http://ezbi-pannemix.herokuapp.com/movimento",
-                          data: {cab: cabecalho, prod: produtos, flag: 0},
-                          success: function(dt){
-
-                            console.log('teste de retorno mensagem', dt)
-                            if (dt != 'Error'){
-
-                                var obj = JSON.parse(dt)
-
-                                $(".showProdutos tr").remove()
-                                obj.forEach(function(o, index){
-                                      preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0,  'show')
-
-                                });
-
-                                localStorage.setItem('idMovPannemix',obj[0].cdmovimentacao_id);
-                             
-                                $('.rdButton').attr("disabled", true);
-                                $('#inputLoja2').attr("disabled", true);
-                             
-                             
-                                excluirItem()
-                             
-                              }else{
-                                $('.alertErro').show()
-                              }
-                            }
-                    });
-                   }
-
-                    $(".lpTbody tr").remove()
-// <!--                    $('#inputGrupo').val("");-->
-// <!--                    $('#inputGrupo').attr("placeholder", "Escolha um grupo...");-->
-                    $('#inputSubGrupo').val("");
-                    $('#inputSubGrupo').attr("placeholder", "Escolha um subgrupo...");
-                    $('#inputProduto').focus()
-                   
-              } else {
-
-                  alert("Escolha uma Loja!!!")
-                  $('#inputLoja2').focus()
-                  
-
+                $('.alertErro').show()
               }
-            }else{
-              alert('Escolha um tipo de movimentação!!!')
+
             }
+          });
 
-});
+        } else {
+          $.ajax({
+            type: "POST",
+            headers: { 'X-CSRFToken': csrftoken },
+            url: "https://ezbi-pannemix.herokuapp.com/movimento",
+            data: { cab: cabecalho, prod: produtos, flag: 0 },
+            success: function (dt) {
+
+              console.log('teste de retorno mensagem', dt)
+              if (dt != 'Error') {
+
+                var obj = JSON.parse(dt)
+
+                $(".showProdutos tr").remove()
+                obj.forEach(function (o, index) {
+                  preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0, 'show')
+
+                });
+
+                localStorage.setItem('idMovPannemix', obj[0].cdmovimentacao_id);
+
+                $('.rdButton').attr("disabled", true);
+                $('#inputLoja2').attr("disabled", true);
+
+
+                excluirItem()
+
+              } else {
+                $('.alertErro').show()
+              }
+            }
+          });
+        }
+
+        $(".lpTbody tr").remove()
+        // <!--                    $('#inputGrupo').val("");-->
+        // <!--                    $('#inputGrupo').attr("placeholder", "Escolha um grupo...");-->
+        $('#inputSubGrupo').val("");
+        $('#inputSubGrupo').attr("placeholder", "Escolha um subgrupo...");
+        $('#inputProduto').focus()
+
+      } else {
+
+        alert("Escolha uma Loja!!!")
+        $('#inputLoja2').focus()
+
+
+      }
+    } else {
+      alert('Escolha um tipo de movimentação!!!')
+    }
+
+  });
 
 
 
 
 
 
-$('#btnFinalizar').click(function(){
+  $('#btnFinalizar').click(function () {
 
-        const varStorage = localStorage.getItem("idMovPannemix")
+    const varStorage = localStorage.getItem("idMovPannemix")
 
-        var cab = lerCabecalho()
+    var cab = lerCabecalho()
 
 
-        $.ajax({
-                          type:"POST",
-                          headers: {'X-CSRFToken': csrftoken},
-                          url: "http://ezbi-pannemix.herokuapp.com/fimMovimento",
-                          data: {flag: varStorage, cab: cab},
-                          success: function(dt){
+    $.ajax({
+      type: "POST",
+      headers: { 'X-CSRFToken': csrftoken },
+      url: "https://ezbi-pannemix.herokuapp.com/fimMovimento",
+      data: { flag: varStorage, cab: cab },
+      success: function (dt) {
 
         // <!--                       Remove o id do item do localstorage    -->
-                                   localStorage.removeItem('idMovPannemix')
+        localStorage.removeItem('idMovPannemix')
 
         // <!--                       Habilita o radio button dos movimentos     -->
-                                   $('.rdButton').attr("disabled", false);
+        $('.rdButton').attr("disabled", false);
 
         // <!--                       Habilita o campo loja, limpa o campo e seta o placeholder novamente      -->
-                                   $('#inputLoja2').attr("disabled", false);
-                                   $('#inputLoja2').val("");
-                                   $('#inputLoja2').attr("placeholder", "Escolha uma loja...");
+        $('#inputLoja2').attr("disabled", false);
+        $('#inputLoja2').val("");
+        $('#inputLoja2').attr("placeholder", "Escolha uma loja...");
 
-                                   $(".showProdutos tr").remove()
+        $(".showProdutos tr").remove()
 
-                                   alert("Registro finalizado com sucesso!!!")
+        alert("Registro finalizado com sucesso!!!")
 
-                                  //  this.attr('href', "{% url 'filtro_consulta' %}")
-                                   window.location.href="{% url 'filtro_consulta' %}"
+        //  this.attr('href', "{% url 'filtro_consulta' %}")
+        window.location.href = "{% url 'filtro_consulta' %}"
 
-                          },
-                          error: function(XMLHttpRequest, textStatus, errorThrown){
-                                alert("O registro não finalizado, tente novamente!!!");
-                            }
-                    });
-
-
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        alert("O registro não finalizado, tente novamente!!!");
+      }
+    });
 
 
-});
 
 
-function lerCabecalho(){
-
-        dados = {
-           movimento : $("input[name='inpTpMovi']:checked").val(),
-                loja : $("#inputLoja2").val(),
-               grupo : $("#inputGrupo").val(),
-            subgrupo : $("#inputSubGrupo").val(),
-                data : $('#idData').val()
-          }
-
-          return JSON.stringify(dados)
-}
+  });
 
 
-function lerTabela(){
+  function lerCabecalho() {
 
-      var produtos = [];
-      var lista = $('.lpTbody');
-      // var input = $('#vlPrd')
-      // var input2 = $('#vlPrdLiq')
-      
+    dados = {
+      movimento: $("input[name='inpTpMovi']:checked").val(),
+      loja: $("#inputLoja2").val(),
+      grupo: $("#inputGrupo").val(),
+      subgrupo: $("#inputSubGrupo").val(),
+      data: $('#idData').val()
+    }
 
-      $(lista).find('tr').each(function(index, tr) {
+    return JSON.stringify(dados)
+  }
 
-        var vlLiquido = 0
-        if ($(tr).find('input:eq(1)').val()){
-          vlLiquido = $('tr').find('input:eq(1)').val()
-        }
-         produtos.push(JSON.stringify(
-                      { "cdProduto": $(tr).find('td:eq(0)').html(),
-                        "nmProduto": $(tr).find('td:eq(1)').html(),
-                        "valor":     $(tr).find('input:eq(0)').val(),
-                        "valorLiquido": vlLiquido
-                      }))
-      });
+
+  function lerTabela() {
+
+    var produtos = [];
+    var lista = $('.lpTbody');
+    // var input = $('#vlPrd')
+    // var input2 = $('#vlPrdLiq')
+
+
+    $(lista).find('tr').each(function (index, tr) {
+
+      var vlLiquido = 0
+      if ($(tr).find('input:eq(1)').val()) {
+        vlLiquido = $('tr').find('input:eq(1)').val()
+      }
+      produtos.push(JSON.stringify(
+        {
+          "cdProduto": $(tr).find('td:eq(0)').html(),
+          "nmProduto": $(tr).find('td:eq(1)').html(),
+          "valor": $(tr).find('input:eq(0)').val(),
+          "valorLiquido": vlLiquido
+        }))
+    });
 
     return produtos
 
-}
-
-
-
-
-function checaLocalStorage(){
-
-      localStorage.removeItem('itemPannemix')
-
-      if (localStorage.getItem("itemPannemix") === null) {
-      }
-
-      localStorage.setItem('itemPannemix', 'Daniel');
-
-
-
-}
-
-
-window.onload = (function(){
-
-  
-  const varStorage = localStorage.getItem("idMovPannemix")
-
-  if(varStorage){
-
-    $.ajax({
-
-                          type:"POST",
-                          headers: {'X-CSRFToken': csrftoken},
-                          url: "http://ezbi-pannemix.herokuapp.com/getEditar",
-                          data: {dados: varStorage},
-                          success: function(dt){
-                           
-                            var obj = JSON.parse(dt)
-
-                            console.log(dt)
-
-                            $(".showProdutos tr").remove()
-                            $('#inputLoja2').val(obj[0].cdmovimentacao__cdloja__nmloja)
-                            $('#inputLoja2').attr("disabled", true)
-                            $('#idData').val(obj[0].cdmovimentacao__dtmovimentacao)
-                            // document.getElementById("idData").value = obj[0].cdmovimentacao__dtmovimentacao
-
-                              var radio = document.getElementsByName('inpTpMovi')
-                              for(var i = 0; i <= radio.length -1; i++){
-                                if(radio[i].value == obj[0].cdmovimentacao__cdtipomovimento__nmtipomovimento ){
-                                  radio[i].checked = true
-                                }
-                              }
-                              $('.rdButton').attr("disabled", true);
-
-                            obj.forEach(function(o, index){
-
-                              preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0,  'show')
-
-
-                             });
-
-                             excluirItem()
-                          }
-                    });
   }
 
-})
+
+
+
+  function checaLocalStorage() {
+
+    localStorage.removeItem('itemPannemix')
+
+    if (localStorage.getItem("itemPannemix") === null) {
+    }
+
+    localStorage.setItem('itemPannemix', 'Daniel');
+
+
+
+  }
+
+
+  window.onload = (function () {
+    const varStorage = localStorage.getItem("idMovPannemix")
+    if (varStorage) {
+      $.ajax({
+        type: "POST",
+        headers: { 'X-CSRFToken': csrftoken },
+        url: "https://ezbi-pannemix.herokuapp.com/getEditar",
+        data: { dados: varStorage },
+        success: function (dt) {
+          var obj = JSON.parse(dt)
+          console.log(dt)
+          $(".showProdutos tr").remove()
+          $('#inputLoja2').val(obj[0].cdmovimentacao__cdloja__nmloja)
+          $('#inputLoja2').attr("disabled", true)
+          $('#idData').val(obj[0].cdmovimentacao__dtmovimentacao)
+          // document.getElementById("idData").value = obj[0].cdmovimentacao__dtmovimentacao
+
+          var radio = document.getElementsByName('inpTpMovi')
+          for (var i = 0; i <= radio.length - 1; i++) {
+            if (radio[i].value == obj[0].cdmovimentacao__cdtipomovimento__nmtipomovimento) {
+              radio[i].checked = true
+            }
+          }
+          $('.rdButton').attr("disabled", true);
+
+          obj.forEach(function (o, index) {
+
+            preecheTabela(o.cditemmovimentado, o.cdproduto__nmproduto, o.cdunidade__nmUnidade, o.valor, o.valorLiquido, 0, 'show')
+
+
+          });
+
+          excluirItem()
+        }
+      });
+    }
+
+  })
 
 
 
 
-  </script>
+</script>
 
 </html>
