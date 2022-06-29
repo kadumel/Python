@@ -66,6 +66,7 @@ class Movimentacao(models.Model):
     dtmovimentacao = models.DateTimeField(auto_now_add=False)  # Field name made lowercase.
     dtAlteracao = models.DateTimeField(auto_now=True)  # Field name made lowercase.
     status = models.ForeignKey("Status",models.PROTECT)
+    obs = models.CharField(db_column='obs', max_length=70, blank=True, null=True)  # Field name made lowercase.
     class Meta:
         managed = False
         db_table = 'Movimentacao'

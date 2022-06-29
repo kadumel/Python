@@ -314,61 +314,61 @@ def acompanhamentoMov(request):
         # Apenas Um Filtro
         if loja != None and usuario == None and tipoMov ==None and status == None:
             print('1 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial,dtmovimentacaolte=dtFinal, cdloja_id_in=lojasID ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, cdloja_id__in=lojasID ).order_by('dtmovimentacao')
         elif loja == None and usuario != None and tipoMov ==None and status == None:
             print('2 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial,dtmovimentacaolte=dtFinal, user_id= usuario, cdloja_id_in=lojasID  ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, user_id= usuario, cdloja_id__in=lojasID  ).order_by('dtmovimentacao')
         elif loja == None and usuario == None and tipoMov !=None and status == None:
             print('3 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial,dtmovimentacaolte=dtFinal, cdtipomovimento_id=tipoMov, cdloja_id_in=lojasID  ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, cdtipomovimento_id=tipoMov, cdloja_id__in=lojasID  ).order_by('dtmovimentacao')
         elif loja == None and usuario == None and tipoMov ==None and status != None:
             print('4 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial,dtmovimentacaolte=dtFinal, status_id=status, cdloja_id_in=lojasID  ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, status_id=status, cdloja_id__in=lojasID  ).order_by('dtmovimentacao')
 
         # Dois Filtros
         #  Loja
         elif loja != None and usuario != None and tipoMov ==None and status == None:
             print('5 - Filtro - ID Usuário = ', usuario, f"ID Loja = {loja} ")
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial,dtmovimentacaolte=dtFinal, cdloja_id_in=lojasID, user_id= usuario ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, cdloja_id__in=lojasID, user_id= usuario ).order_by('dtmovimentacao')
         elif loja != None and usuario == None and tipoMov !=None and status == None:
             print('6 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial,dtmovimentacaolte=dtFinal, cdloja_id_in=lojasID, cdtipomovimento_id=tipoMov ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, cdloja_id__in=lojasID, cdtipomovimento_id=tipoMov ).order_by('dtmovimentacao')
         elif loja != None and usuario == None and tipoMov ==None and status != None:
             print('7 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial,dtmovimentacaolte=dtFinal, cdloja_id_in=lojasID, status_id=status ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial,dtmovimentacao__lte=dtFinal, cdloja_id__in=lojasID, status_id=status ).order_by('dtmovimentacao')
         elif loja == None and usuario != None and tipoMov != None and status == None:
             print('8 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial, dtmovimentacaolte=dtFinal, user_id= usuario, cdtipomovimento_id=tipoMov, cdloja_id_in=lojasID ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, user_id= usuario, cdtipomovimento_id=tipoMov, cdloja_id__in=lojasID ).order_by('dtmovimentacao')
         elif loja == None and usuario != None and tipoMov == None and status != None:
             print('9 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial, dtmovimentacaolte=dtFinal, user_id= usuario, status_id=status, cdloja_id_in=lojasID ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, user_id= usuario, status_id=status, cdloja_id__in=lojasID ).order_by('dtmovimentacao')
         elif loja == None and usuario == None and tipoMov != None and status != None:
             print('10 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial, dtmovimentacaolte=dtFinal, cdtipomovimento_id=tipoMov, status_id=status, cdloja_id_in=lojasID ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, cdtipomovimento_id=tipoMov, status_id=status, cdloja_id__in=lojasID ).order_by('dtmovimentacao')
 
         # Tres FIltros
         elif loja != None and usuario != None and tipoMov != None and status == None:
             print('11 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial, dtmovimentacaolte=dtFinal, cdloja_id_in=lojasID, user_id= usuario, cdtipomovimento_id=tipoMov).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, cdloja_id__in=lojasID, user_id= usuario, cdtipomovimento_id=tipoMov).order_by('dtmovimentacao')
         elif loja != None and usuario != None and tipoMov == None and status != None:
             print('12 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial, dtmovimentacaolte=dtFinal, cdloja_id_in=lojasID, user_id= usuario, status_id=status).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, cdloja_id__in=lojasID, user_id= usuario, status_id=status).order_by('dtmovimentacao')
         elif loja == None and usuario != None and tipoMov != None and status != None:
             print('13 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial, dtmovimentacaolte=dtFinal, user_id= usuario, cdtipomovimento_id=tipoMov,  status_id=status, cdloja_id_in=lojasID ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, user_id= usuario, cdtipomovimento_id=tipoMov,  status_id=status, cdloja_id__in=lojasID ).order_by('dtmovimentacao')
         elif loja != None and usuario == None and tipoMov != None and status != None:
             print('14 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial, dtmovimentacaolte=dtFinal, cdtipomovimento_id=tipoMov, status_id=status, cdloja_id_in=lojasID  ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, cdtipomovimento_id=tipoMov, status_id=status, cdloja_id__in=lojasID  ).order_by('dtmovimentacao')
 
         # Quatro Filtros
         elif loja != None and usuario != None and tipoMov != None and status != None:
             print('15 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial, dtmovimentacao_lte=dtFinal,cdloja_id=lojasID, user_id= usuario, cdtipomovimento_id=tipoMov, status_id=status ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao_lte=dtFinal,cdloja_id=lojasID, user_id= usuario, cdtipomovimento_id=tipoMov, status_id=status ).order_by('dtmovimentacao')
 
         # Somente com o filtro de data
         else:
             print('16 - Filtro')
-            x = Movimentacao.objects.filter(dtmovimentacao_gte=dtInicial, dtmovimentacaolte=dtFinal, cdloja_id_in=lojasID ).order_by('dtmovimentacao')
+            x = Movimentacao.objects.filter(dtmovimentacao__gte=dtInicial, dtmovimentacao__lte=dtFinal, cdloja_id__in=lojasID ).order_by('dtmovimentacao')
 
 
         lista = []
@@ -513,10 +513,10 @@ def getEditar(request):
         idMov = request.POST.get('dados')
         print("id da movimentação: ", idMov)
         dados = Itemmovimentado.objects.filter(cdmovimentacao=idMov).values('cdmovimentacao',
-                                                                            'cdmovimentacao_cdloja_nmloja', 
+                                                                            'cdmovimentacao__cdloja__nmloja', 
                                                                             'cdmovimentacao__dtmovimentacao', 
-                                                                            'cdmovimentacao_cdtipomovimento_nmtipomovimento', 
-                                                                            'cdmovimentacao_cdtipomovimento_conversao', 
+                                                                            'cdmovimentacao__cdtipomovimento__nmtipomovimento', 
+                                                                            'cdmovimentacao__cdtipomovimento__conversao', 
                                                                             'cdproduto', 
                                                                             'cdproduto__nmproduto', 
                                                                             'valor', 
@@ -532,13 +532,13 @@ def getEditar(request):
             dados = {
                 "cditemmovimentado" : i["cditemmovimentado"],
                 "cdmovimentacao" : i['cdmovimentacao'],
-                "cdmovimentacao_cdlojanmloja" : i['cdmovimentacaocdloja_nmloja'],
-                'cdmovimentacao_dtmovimentacao' : i['cdmovimentacao_dtmovimentacao'].date().strftime('%Y-%m-%d'), 
-                'cdmovimentacao_cdtipomovimentonmtipomovimento' :i['cdmovimentacaocdtipomovimento_nmtipomovimento'], 
-                'cdmovimentacao_cdtipomovimentoconversao' : i['cdmovimentacaocdtipomovimento_conversao'], 
+                "cdmovimentacao__cdloja__nmloja" : i['cdmovimentacao__cdloja__nmloja'],
+                'cdmovimentacao__dtmovimentacao' : i['cdmovimentacao__dtmovimentacao'].date().strftime('%Y-%m-%d'), 
+                'cdmovimentacao__cdtipomovimento__nmtipomovimento' :i['cdmovimentacao__cdtipomovimento__nmtipomovimento'], 
+                'cdmovimentacao__cdtipomovimento__conversao' : i['cdmovimentacao__cdtipomovimento__conversao'], 
                 "cdProduto" : i['cdproduto'],
-                "cdproduto_nmproduto" : i['cdproduto_nmproduto'],
-                "cdunidade_nmUnidade"  : i['cdunidade_nmUnidade'],
+                "cdproduto__nmproduto" : i['cdproduto__nmproduto'],
+                "cdunidade__nmUnidade"  : i['cdunidade__nmUnidade'],
                 "valor" : i['valor'],
                 "valorLiquido" : i["valorLiquido"]
             }
@@ -634,6 +634,7 @@ def importaVenda(request):
         data_atual = datetime.datetime.strptime(f"{data_importa} 00:00:00", '%Y-%m-%d %H:%M:%S')
         print(data_atual)
         usuario_logado = User.objects.filter(username=request.user).values('id')
+        id_mov = 0
         for i in imported_data:
             produto = i[0]
             valor = i[1]
@@ -643,18 +644,14 @@ def importaVenda(request):
             cdunidade_produto = Produto.objects.filter(cdproduto=cd).values("cdunidade_id").get()
             cd_uni = cdunidade_produto["cdunidade_id"]
             
-            base_mov = Movimentacao(
-                cdtipomovimento_id=5,
-                user_id = usuario_logado,
-                cdloja_id=cd_loja,
-                dtmovimentacao=data_atual,
-                status_id=3,
-            )
-            #base_mov.save()
-            id_mov = Movimentacao.objects.latest("cdmovimentacao").pk
-            #print(id_mov, cd_produto, valor,usuario_logado,  cdunidade_produto)
-            
-            
+            if id_mov == 0:
+                id_mov = Movimentacao.objects.create(cdtipomovimento_id=5,
+                                                        user_id = usuario_logado,
+                                                        cdloja_id=cd_loja,
+                                                        dtmovimentacao=data_atual,
+                                                        status_id=3,
+                                                        obs='Importacao').pk
+
             base_item = Itemmovimentado(
                 cdmovimentacao_id=id_mov,
                 cdproduto_id=cd,
@@ -662,9 +659,9 @@ def importaVenda(request):
                 valorLiquido=valor,
                 cdunidade_id=cd_uni,
             )
-            #base_item.save()
+            base_item.save()
             print(data_atual, id_mov, cd_produto, valor, cdunidade_produto)
-            print("Ufa, tudo certo")
+
         messages.success(request, "Importação de vendas realizada com sucesso.") 
 
 
@@ -757,11 +754,11 @@ def desfazerImportacao(request):
         date_temp = datetime.datetime.strptime(f"{data_importacao} 00:00:00", "%Y-%m-%d %H:%M:%S")
         new_date = date_temp + datetime.timedelta(days=1)
         
-        #print(date_temp, new_date)
+        print(date_temp, new_date)
         if opcao == "depara":
             print(data_importacao, cd_loja,)
             base = importa_de_para.objects.filter(
-                dtimportacao=data_importacao,
+                # dtimportacao=data_importacao,
                 cdloja=cd_loja
             )
             if len(base) > 0:
@@ -770,23 +767,17 @@ def desfazerImportacao(request):
             else:
                 messages.warning(request, "Não foi encontrado nenhuma informação referente.")
 
-        if opcao == "vendas":
+        elif opcao == "vendas":
                 base = Movimentacao.objects.filter(
                     dtmovimentacao__gte=f"{data_importacao} 00:00:00",
                     dtmovimentacao__lt=new_date,
                     cdloja=cd_loja,
-                    cdtipomovimento_id=5)
+                    cdtipomovimento_id=5,
+                    obs = 'Importacao').values('cdmovimentacao')
                 
-                if len(base) > 0:
-                    print("")
-                    itens_encontados = []
-                    for i in base:
-                        itens_encontados.append(i.cdmovimentacao)
-                    
-                    for it in itens_encontados:
-                        base_item = Itemmovimentado.objects.filter(cdmovimentacao=it).delete()                            
-                    
-                    base.delete()
+                if base:
+                    Itemmovimentado.objects.filter(cdmovimentacao__in=base).delete()
+                    Movimentacao.objects.filter(cdmovimentacao__in=base).delete()
                     messages.success(request, "Importação desfeita com sucesso.")
                 else:
                     messages.warning(request, "Não foi encontrado nenhuma informação referente.")
@@ -889,3 +880,8 @@ def importData(request):
             desfazerImportacao(request)
         
     return render(request, 'core/importaDados.html', {'result_lojas':lojas})
+
+
+
+
+
