@@ -583,14 +583,9 @@ def excluirItem(request):
         try:
             idMov = request.POST.get('idMov')
             idItem = request.POST.get('idItem')
-
-            # print(idMov, '-', idItem)
-
             Itemmovimentado.objects.filter(cditemmovimentado=idItem).delete()
-
             lista = getItens(idMov)
             return HttpResponse(json.dumps(lista))
-
         except ValueError as e:
             print(e)
             return HttpResponse("Erro ao exculir registro.")
@@ -602,7 +597,11 @@ def excluirItem(request):
 def importaVenda(request):
     dataset = Dataset()
     new_mov = request.FILES['myfile']
-    
+    #verifica se o arquivo é xlsx
+    if not new_mov.name.endswith('xlsx'):
+        messages.error(request, 'Erro ao importar - Verifique o tipo do arquivo.  ')
+        return redirect('/importData')
+
     imported_data = dataset.load(new_mov.read())
     data_importa = request.POST.get('data_importacao')
     lista_pd_nao_correspondentes = []
@@ -664,25 +663,32 @@ def importaVenda(request):
 
 
 def importaPedido(request):
+    
+    print("Entrou no pedido...")
     dataset = Dataset()
     new_mov = request.FILES['myfile']
-    imported_data = dataset.load(new_mov.read())
+    #verifica se o arquivo é xlsx
+    if not new_mov.name.endswith('xlsx'):
+        messages.error(request, 'Erro ao importar - Verifique o tipo do arquivo.  ')
+        return redirect('/importData')
 
-    print(imported_data)
+    imported_data = dataset.load(new_mov.read())
+        
 
     listDate = []
     cliente = None
     listProdutos = []
     listProdutoErro = []
+    listProdutoErroUnicos = []
     
     for i in imported_data:
-        
             # Agrupamento das datas
             if not i[4] in listDate:
                 listDate.append(i[4])
 
             # Agrupamento dos produtos
             if not i[2] in listProdutos:
+                print(i[2])
                 listProdutos.append(i[2])
 
             # Codigo da empresa
@@ -705,40 +711,46 @@ def importaPedido(request):
                 if not idProduto:
                     listProdutoErro.append(v)
 
+            for r in listProdutoErro:
+                if not r in listProdutoErroUnicos:
+                    listProdutoErroUnicos.append(r)
+
             
-            # print(listProdutoErro   )  
-            if not listProdutoErro and cliente != None:
+    # print(listProdutoErro   )  
+    if not listProdutoErro and cliente != None:
 
-                for x in listDate:
+        for x in listDate:
+            # print('inserindo cabeçalho')
+            # Preenchimento do cabeçalho da movimentação
+            data = dt.strptime(x, "%d/%m/%Y")
+            idMovimentacao = Movimentacao.objects.create(cdtipomovimento_id = 3,
+                                                        user_id = User.objects.filter(username=request.user).values('id'),
+                                                        cdloja_id = cliente,
+                                                        dtmovimentacao = data,
+                                                        status_id = 4).pk
+            for j in imported_data:
+                if j[4] == x:
+                    # print(j)
+                    idProduto = list(Produto.objects.filter(nmproduto=j[2]).values("cdproduto", "cduniconv"))
+                    # print("teste - ", idProduto)
+                    Itemmovimentado.objects.update_or_create(
+                                cdmovimentacao_id=idMovimentacao,
+                                cdproduto_id= idProduto[0]['cdproduto'],
+                                valor=j[6],
+                                valorLiquido=0,
+                                cdunidade_id=idProduto[0]['cduniconv']
+                            )
 
-                    # print('inserindo cabeçalho')
-                    # Preenchimento do cabeçalho da movimentação
-                    data = dt.strptime(x, "%d/%m/%Y")
-                    idMovimentacao = Movimentacao.objects.create(cdtipomovimento_id = 3,
-                                                                user_id = User.objects.filter(username=request.user).values('id'),
-                                                                cdloja_id = cliente,
-                                                                dtmovimentacao = data,
-                                                                status_id = 4).pk
-
-
-                    for j in imported_data:
-
-                        if j[4] == x:
-
-                            idProduto = list(Produto.objects.filter(nmproduto=j[2]).values("cdproduto", "cduniconv"))
-
-                            Itemmovimentado.objects.update_or_create(
-                                        cdmovimentacao_id=idMovimentacao,
-                                        cdproduto_id= idProduto[0]['cdproduto'],
-                                        valor=j[6],
-                                        valorLiquido=0,
-                                        cdunidade_id=idProduto[0]['cduniconv']
-                                    )
-
-                messages.info(request, 'Importação realizada com sucesso!!!')
-                return redirect('/importData')
+        messages.info(request, 'Importação realizada com sucesso!!!')
+        return redirect('/importData')
     else:
-        return HttpResponse(json.dumps(listProdutoErro))
+        messages.error(request, "AVISO IMPORTANTE! - IMPORTAÇÃO NÃO REALIZADA")
+        messages.warning(request, "LISTA DE PRODUTOS NÃO ENCONTRADOS.")
+        for i in listProdutoErroUnicos:
+            messages.info(request, f"{i}")
+        messages.warning(request, f"Total: {len(listProdutoErroUnicos)}")
+        return redirect('/importData')
+        # return HttpResponse(json.dumps(listProdutoErro))
 
     # return render(request, 'core/importaDados.html')
     #return render(request, 'core/importaDados.html') 
@@ -783,6 +795,12 @@ def desfazerImportacao(request):
 def importaDePara(request):
     dataset = Dataset()
     new_mov = request.FILES['myfile']
+    
+    #verifica se o arquivo é xlsx
+    if not new_mov.name.endswith('xlsx'):
+        messages.error(request, 'Erro ao importar - Verifique o tipo do arquivo.  ')
+        return redirect('/importData')
+    
     imported_data = dataset.load(new_mov.read())
     data_importa = request.POST.get('data_importacao')
     nome_loja = request.POST.get('loja')
@@ -793,7 +811,7 @@ def importaDePara(request):
     divergentes = []
     lista_cdprodutos_nao_encontrados = []
     dados_importados = []
-    #print(imported_data)
+    
     if verificar_importacao:
         ultima_data = importa_de_para.objects.filter(cdloja=cd_loja).latest('dtimportacao')
         messages.warning(request, f"Essa loja já foi importada no dia: {ultima_data.dtimportacao}")
@@ -873,13 +891,13 @@ def importData(request):
                 importaVenda(request)
             except datastructures.MultiValueDictKeyError as e:
                 messages.error(request, f"Ocorreu um erro em - {e}")
-
+        elif btn_importar == "importar" and opcao == "pedido":
+            try:
+                importaPedido(request)
+            except datastructures.MultiValueDictKeyError as e:
+                messages.error(request, f"Ocorreu um erro em {e}")
+        
         if (desfazer_importacao == "desfazer"):
             desfazerImportacao(request)
         
     return render(request, 'core/importaDados.html', {'result_lojas':lojas})
-
-
-
-
-
