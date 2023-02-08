@@ -599,7 +599,7 @@ def importaVenda(request):
     new_mov = request.FILES['myfile']
     #verifica se o arquivo é xlsx
     if not new_mov.name.endswith('xlsx'):
-        messages.error(request, 'Erro ao importar - Verifique o tipo do arquivo.  ')
+        messages.error(request, 'Erro ao importar - Verifique o tipo do arquivo.')
         return redirect('/importData')
 
     imported_data = dataset.load(new_mov.read())
@@ -613,6 +613,7 @@ def importaVenda(request):
         #verificar se tem no de para
         produto = i[0]
         de_para = importa_de_para.objects.filter(nmprodutocliente=f"{produto}")
+        
         if de_para:
             print(f"tem - {produto}")
         else:
@@ -623,7 +624,10 @@ def importaVenda(request):
         messages.error(request, "AVISO IMPORTANTE! - IMPORTAÇÃO NÃO REALIZADA")
         messages.warning(request, "LISTA DE PRODUTOS NÃO ENCONTRADOS NO DE PARA.")
         for i in lista_pd_nao_correspondentes:
-            messages.info(request, f"{i}")
+            if i == None:
+                messages.error(request, "Opa, planilha contém linhas vazias...")
+            else:
+                messages.info(request, f"{i}")
         messages.warning(request, f"Total: {len(lista_pd_nao_correspondentes)}")
         return render(request, 'core/importaDados.html')
     
@@ -638,8 +642,8 @@ def importaVenda(request):
             produto = i[0]
             valor = i[1]
             quantidade = i[2]
-            cd_produto = importa_de_para.objects.filter(nmprodutocliente=f"{produto}").values('cdproduto').get()
-            cd = cd_produto["cdproduto"]
+            cd_produto = importa_de_para.objects.filter(nmprodutocliente=f"{produto}").values('cdproduto')
+            cd = cd_produto[0]['cdproduto']
             cdunidade_produto = Produto.objects.filter(cdproduto=cd).values("cdunidade_id").get()
             cd_uni = cdunidade_produto["cdunidade_id"]
             
@@ -661,7 +665,7 @@ def importaVenda(request):
             base_item.save()
         messages.success(request, "Importação de vendas realizada com sucesso.") 
 
-
+ 
 def importaPedido(request):
     
     print("Entrou no pedido...")
